@@ -1,0 +1,20 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run Dev Server",
+			"type": "shell",
+			"command": "python -m http.server",
+			"isBackground": true,
+			"group": "build"
+		},
+		{
+			"label": "Run Node Proxy Server",
+			"type": "shell",
+			"command": "cd Server && npm start",
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build"
+		}
+	]
+}

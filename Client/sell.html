@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bán Hàng - Firebase Marketplace</title>
+    <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+    <div class="sell-page">
+        <header class="header">
+            <div class="header-wrapper">
+                <div class="logo">
+                    <span class="logo-text">💳 MARKETPLACE</span>
+                </div>
+                <nav class="header-nav">
+                    <a href="index.html" class="nav-link">🏠 Trang chủ</a>
+                    <a href="order.html" class="nav-link">📦 Đơn hàng</a>
+                    <a href="login.html" class="nav-link">🔐 Đăng nhập</a>
+                </nav>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <section class="sell-intro">
+                <div class="banner">
+                    <h2>📣 Trang Bán Hàng</h2>
+                    <p>Chào mừng đến trang bán hàng. Tại đây bạn có thể đăng bán sản phẩm mới hoặc quản lý các mặt hàng đang chờ duyệt.</p>
+                    <a href="index.html" class="btn-primary">Tiếp tục mua sắm</a>
+                </div>
+            </section>
+
+            <section class="sell-details">
+                <div class="info-card">
+                    <h3>Đăng bán mặt hàng</h3>
+                    <p>Hiện tại tính năng bán hàng đang trong giai đoạn phát triển. Bạn có thể chuẩn bị thông tin sau:</p>
+                    <ul>
+                        <li>Tên sản phẩm</li>
+                        <li>Mô tả sản phẩm</li>
+                        <li>Giá bán</li>
+                        <li>Hình ảnh sản phẩm</li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-auth-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCEF-miiOOQ-yb42KTGYozNjUY8zImq2Ec",
+            authDomain: "lesson3-b336e.firebaseapp.com",
+            projectId: "lesson3-b336e",
+            storageBucket: "lesson3-b336e.firebasestorage.app",
+            messagingSenderId: "757879338973",
+            appId: "1:757879338973:web:431390ad9fee86d23aa834",
+            measurementId: "G-DQ1BM8DWMD"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        auth.onAuthStateChanged(user => {
+            if (!user) {
+                alert('Bạn cần đăng nhập để truy cập trang bán hàng.');
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+</html>
