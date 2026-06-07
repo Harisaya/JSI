@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,11 +13,11 @@
 
     <section id="site-choice" class="site-choice active">
         <div class="site-choice-card">
-            <h1>Chào mừng đến Chợ Xịn</h1>
-            <p>Chọn một trong hai cách để tiếp tục trên website:</p>
+            <h1 data-i18n="home.title">Chào mừng đến Chợ Xịn</h1>
+            <p data-i18n="home.desc">Chọn một trong hai cách để tiếp tục trên website:</p>
             <div class="site-choice-actions">
-                <button id="goWebsiteBtn" type="button" class="btn-primary">Đi đến website</button>
-                <button id="stayBtn" type="button" class="btn-secondary">Ở lại và xem thông tin</button>
+                <button id="goWebsiteBtn" type="button" class="btn-primary" data-i18n="home.goWebsite">Đi đến website</button>
+                <button id="stayBtn" type="button" class="btn-secondary" data-i18n="home.stay">Ở lại và xem thông tin</button>
             </div>
         </div>
     </section>
@@ -55,11 +55,11 @@
 
     <!-- AUTH BUTTONS (Corner positions) -->
     <div id="login-btn-corner" class="auth-corner-btn left-corner">
-        <a href="login.html">🔐 Đăng nhập</a>
+        <a href="login.html" data-i18n="auth.login">🔐 Đăng nhập</a>
     </div>
     
     <div id="signup-btn-corner" class="auth-corner-btn right-corner">
-        <a href="signup.html">📝 Đăng ký</a>
+        <a href="signup.html" data-i18n="auth.signup">📝 Đăng ký</a>
     </div>
     
     <div id="logout-btn-corner" class="auth-corner-btn right-corner" style="display:none;" onclick="handleLogoutCorner()">
@@ -73,35 +73,50 @@
                 <div class="logo">
                     <span class="logo-text">💳 Chợ Xịn</span>
                 </div>
-                <div class="search-box">
-                    <input type="text" id="headerSearch" placeholder="Tìm sản phẩm..." class="header-search">
-                    <span class="search-icon">🔍</span>
-                </div>
+
                 <nav class="header-nav">
-                    <a href="#" onclick="switchPage('home')" class="nav-link"><span class="nav-icon">🏠</span> Trang chủ</a>
-                    <a href="#" onclick="switchPage('cart')" class="nav-link"><span class="nav-icon">🛒</span> Giỏ <span id="cart-count" style="display:none;">0</span></a>
-                    <a href="#" onclick="switchPage('orders')" class="nav-link"><span class="nav-icon">📦</span> Đơn hàng</a>
-                    <a href="#" onclick="switchPage('profile')" class="nav-link"><span class="nav-icon">👤</span> Hồ sơ</a>
+                    <a href="index.html" class="nav-link" data-i18n="nav.home"><span class="nav-icon">🏠</span> Trang chủ</a>
+                    <a href="pay.html" class="nav-link" data-i18n="nav.cart"><span class="nav-icon">🛒</span> Giỏ <span id="cart-count" style="display:none;">0</span></a>
+                    <a href="order.html" class="nav-link" data-i18n="nav.orders"><span class="nav-icon">📦</span> Đơn hàng</a>
+                    <a href="profile.html" class="nav-link" data-i18n="nav.profile"><span class="nav-icon">👤</span> Hồ sơ</a>
+                    <a href="role.html" class="nav-link" data-i18n="nav.role"><span class="nav-icon">⭐</span> Vai trò</a>
+                    <div class="language-switcher">
+                        <button id="languageToggle" class="nav-link lang-btn" type="button">
+                            <span class="nav-icon">🌐</span> Ngôn ngữ
+                        </button>
+                        <div id="languageMenu" class="language-menu hidden">
+                            <button type="button" class="language-option" data-lang="vi">Tiếng Việt</button>
+                            <button type="button" class="language-option" data-lang="en">English</button>
+                            <button type="button" class="language-option" data-lang="es">Español</button>
+                            <button type="button" class="language-option" data-lang="fr">Français</button>
+                            <button type="button" class="language-option" data-lang="de">Deutsch</button>
+                            <button type="button" class="language-option" data-lang="zh">中文</button>
+                            <button type="button" class="language-option" data-lang="ja">日本語</button>
+                            <button type="button" class="language-option" data-lang="ko">한국어</button>
+                            <button type="button" class="language-option" data-lang="th">ไทย</button>
+                            <button type="button" class="language-option" data-lang="ar">العربية</button>
+                        </div>
+                    </div>
                 </nav>
                 <div id="auth-links" class="auth-links"></div>
             </div>
             <!-- CATEGORY NAVBAR -->
             <nav class="category-navbar">
-                <a href="#" class="category-nav-item active" data-category="all">📦 Tất cả</a>
-                <a href="#" class="category-nav-item" data-category="electronics">📱 Điện tử</a>
-                <a href="#" class="category-nav-item" data-category="fashion">👗 Thời trang</a>
-                <a href="#" class="category-nav-item" data-category="food">🍔 Thực phẩm</a>
-                <a href="#" class="category-nav-item" data-category="home">🛋️ Nhà cửa</a>
-                <a href="#" class="category-nav-item" data-category="vehicles">🚗 Xe cộ</a>
-                <a href="#" class="category-nav-item" data-category="appliances">🏠 Đồ gia dụng</a>
+                <a href="#" class="category-nav-item active" data-category="all" data-i18n="category.all">📦 Tất cả</a>
+                <a href="#" class="category-nav-item" data-category="electronics" data-i18n="category.electronics">📱 Điện tử</a>
+                <a href="#" class="category-nav-item" data-category="fashion" data-i18n="category.fashion">👗 Thời trang</a>
+                <a href="#" class="category-nav-item" data-category="food" data-i18n="category.food">🍔 Thực phẩm</a>
+                <a href="#" class="category-nav-item" data-category="home" data-i18n="category.home">🛋️ Nhà cửa</a>
+                <a href="#" class="category-nav-item" data-category="vehicles" data-i18n="category.vehicles">🚗 Xe cộ</a>
+                <a href="#" class="category-nav-item" data-category="appliances" data-i18n="category.appliances">🏠 Đồ gia dụng</a>
                 <div style="margin-left: auto; display: flex; align-items: center;">
-                    <label for="timeRangeSelect" style="margin-right: 8px; color: var(--text); font-size: 14px;">⏰ Thời gian:</label>
+                    <label for="timeRangeSelect" style="margin-right: 8px; color: var(--text); font-size: 14px;" data-i18n="category.timeLabel">⏰ Thời gian:</label>
                     <select id="timeRangeSelect" class="sort-select" style="min-width: 160px; padding: 8px 12px;">
-                        <option value="all">Tất cả thời gian</option>
-                        <option value="today">Hôm nay</option>
-                        <option value="yesterday">Hôm qua</option>
-                        <option value="week">Tuần trước</option>
-                        <option value="month">Tháng trước</option>
+                        <option value="all" data-i18n="time.all">Tất cả thời gian</option>
+                        <option value="today" data-i18n="time.today">Hôm nay</option>
+                        <option value="yesterday" data-i18n="time.yesterday">Hôm qua</option>
+                        <option value="week" data-i18n="time.week">Tuần trước</option>
+                        <option value="month" data-i18n="time.month">Tháng trước</option>
                     </select>
                 </div>
             </nav>
@@ -113,24 +128,24 @@
             <section id="home-page" class="page-content active">
                 <div class="banner-section">
                     <div class="banner">
-                        <h2>🛍️ Siêu Thị Trực Tuyến</h2>
-                        <p>Mua sắm dễ dàng - Giao hàng nhanh</p>
+                        <h2 data-i18n="banner.title">🛍️ Siêu Thị Trực Tuyến</h2>
+                        <p data-i18n="banner.desc">Mua sắm dễ dàng - Giao hàng nhanh</p>
                         <div class="banner-actions">
-                            <button type="button" class="btn-primary" onclick="handleSellClick()">📣 Bán đồ ngay</button>
+                            <button type="button" class="btn-primary" onclick="handleSellClick()" data-i18n="banner.sell">📣 Bán đồ ngay</button>
                         </div>
                     </div>
                 </div>
 
                 <section class="filters-section">
                     <div class="search-section">
-                        <input type="text" id="mainSearch" placeholder="Tìm kiếm sản phẩm..." class="main-search">
+                        <input type="text" id="mainSearch" placeholder="Tìm kiếm sản phẩm..." class="main-search" data-i18n-placeholder="search.placeholder">
                         <span class="search-icon">🔍</span>
                     </div>
                     <select id="sortSelect" class="sort-select">
-                        <option value="popular">Phổ biến nhất</option>
-                        <option value="price-low">Giá thấp</option>
-                        <option value="price-high">Giá cao</option>
-                        <option value="rating">Đánh giá cao</option>
+                        <option value="popular" data-i18n="sort.popular">Phổ biến nhất</option>
+                        <option value="price-low" data-i18n="sort.priceLow">Giá thấp</option>
+                        <option value="price-high" data-i18n="sort.priceHigh">Giá cao</option>
+                        <option value="rating" data-i18n="sort.rating">Đánh giá cao</option>
                     </select>
                 </section>
 
@@ -163,16 +178,12 @@
         <span class="visually-hidden">Next</span>
     </button>
     </div>
-                <section class="products-section">
-                    <div id="loading" class="loading-spinner" style="display:none;">
-                        <div class="spinner"></div>
-                        <p>Đang tải sản phẩm...</p>
-                    </div>
+
                     <div id="productsList" class="products-grid"></div>
                     <div id="emptyState" class="empty-state" style="display:none;">
                         <div class="empty-icon">📦</div>
-                        <h3>Không tìm thấy sản phẩm</h3>
-                        <p>Thử tìm kiếm từ khóa khác</p>
+                        <h3 data-i18n="empty.title">Không tìm thấy sản phẩm</h3>
+                        <p data-i18n="empty.desc">Thử tìm kiếm từ khóa khác</p>
                     </div>
                 </section>
 
@@ -180,15 +191,15 @@
                     <div class="about-card">
                         <div class="about-header">
                             <div>
-                                <h2>Giới thiệu Chợ Xịn</h2>
-                                <p>Chợ Xịn là nền tảng mua bán trực tuyến thân thiện và nhanh gọn cho người Việt.</p>
+                                <h2 data-i18n="about.title">Giới thiệu Chợ Xịn</h2>
+                                <p data-i18n="about.desc">Chợ Xịn là nền tảng mua bán trực tuyến thân thiện và nhanh gọn cho người Việt.</p>
                             </div>
-                            <button id="aboutToggleBtn" class="btn-secondary about-toggle" type="button">Mở rộng</button>
+                            <button id="aboutToggleBtn" class="btn-secondary about-toggle" type="button" data-i18n="about.expand">Mở rộng</button>
                         </div>
                         <div id="aboutContent" class="about-content">
-                            <p>Chợ Xịn mang đến cho bạn trải nghiệm mua sắm an toàn, dễ dùng, với sản phẩm đa dạng từ đồ công nghệ, thời trang, đồ gia dụng đến hàng tiêu dùng hàng ngày.</p>
-                            <p>Chúng tôi tập trung vào giao diện nhẹ nhàng, tìm kiếm nhanh và đặt hàng tức thì, giúp bạn tiết kiệm thời gian trong mọi giao dịch.</p>
-                            <p>Với Chợ Xịn, bạn có thể đăng nhập, duyệt sản phẩm, quản lý đơn hàng và thanh toán dễ dàng trong cùng một nền tảng.</p>
+                            <p data-i18n="about.content1">Chợ Xịn mang đến cho bạn trải nghiệm mua sắm an toàn, dễ dùng, với sản phẩm đa dạng từ đồ công nghệ, thời trang, đồ gia dụng đến hàng tiêu dùng hàng ngày.</p>
+                            <p data-i18n="about.content2">Chúng tôi tập trung vào giao diện nhẹ nhàng, tìm kiếm nhanh và đặt hàng tức thì, giúp bạn tiết kiệm thời gian trong mọi giao dịch.</p>
+                            <p data-i18n="about.content3">Với Chợ Xịn, bạn có thể đăng nhập, duyệt sản phẩm, quản lý đơn hàng và thanh toán dễ dàng trong cùng một nền tảng.</p>
                         </div>
                     </div>
                 </section>
@@ -197,32 +208,32 @@
             <!-- CART PAGE -->
             <section id="cart-page" class="page-content">
                 <div class="cart-container">
-                    <h1 class="page-title">🛒 Giỏ Hàng</h1>
+                    <h1 class="page-title" data-i18n="cart.title">🛒 Giỏ Hàng</h1>
                     <div class="cart-wrapper">
                         <div id="cartItems" class="cart-items"></div>
                         <div class="cart-summary">
-                            <h3>Tóm tắt đơn hàng</h3>
+                            <h3 data-i18n="cart.summaryTitle">Tóm tắt đơn hàng</h3>
                             <div class="summary-row">
-                                <span>Tổng tiền:</span>
+                                <span data-i18n="cart.subtotalLabel">Tổng tiền:</span>
                                 <span id="subtotal">0 đ</span>
                             </div>
                             <div class="summary-row">
-                                <span>Phí giao:</span>
+                                <span data-i18n="cart.shippingLabel">Phí giao:</span>
                                 <span id="shipping">15000 đ</span>
                             </div>
                             <div class="summary-row">
-                                <span>Phí đơn hàng:</span>
+                                <span data-i18n="cart.orderFeeLabel">Phí đơn hàng:</span>
                                 <span id="orderFee">5000 đ</span>
                             </div>
                             <div class="summary-row">
-                                <span>Giảm giá:</span>
+                                <span data-i18n="cart.discountLabel">Giảm giá:</span>
                                 <span id="discount">0 đ</span>
                             </div>
                             <div class="summary-row total">
-                                <span>Tổng cộng:</span>
+                                <span data-i18n="cart.totalLabel">Tổng cộng:</span>
                                 <span id="total">15000 đ</span>
                             </div>
-                            <button id="checkoutBtn" class="checkout-btn">Đặt hàng</button>
+                            <button id="checkoutBtn" class="checkout-btn" data-i18n="cart.checkout">Đặt hàng</button>
                         </div>
                     </div>
                 </div>
@@ -231,68 +242,14 @@
             <!-- ORDERS PAGE -->
             <section id="orders-page" class="page-content">
                 <div class="orders-container">
-                    <h1 class="page-title">📦 Đơn Hàng Của Tôi</h1>
-                    <p style="margin-bottom:16px; color:#7a6d42;">Bạn cũng có thể mở trang đơn hàng riêng: <a href="order.html" style="color:#b8860b; text-decoration: underline;">Xem order.html</a></p>
+                    <h1 class="page-title" data-i18n="orders.title">📦 Đơn Hàng Của Tôi</h1>
+                    <p style="margin-bottom:16px; color:#7a6d42;" data-i18n="orders.desc">Bạn cũng có thể mở trang đơn hàng riêng: <a href="order.html" style="color:#b8860b; text-decoration: underline;">Xem order.html</a></p>
                     <div id="ordersList" class="orders-grid">
-                        <p style="text-align:center; color:#7a6d42;">Bạn chưa có đơn hàng nào</p>
+                        <p style="text-align:center; color:#7a6d42;" data-i18n="orders.empty">Bạn chưa có đơn hàng nào</p>
                     </div>
                 </div>
             </section>
 
-            <!-- PROFILE PAGE -->
-            <section id="profile-page" class="page-content">
-                <div class="profile-container">
-                    <h1 class="page-title">👤 Hồ sơ người dùng</h1>
-                    <div id="profileContent" class="profile-content">
-                        <div class="profile-section">
-                            <h3>Thông tin cá nhân</h3>
-                            <div class="info-group">
-                                <span class="label">Tên:</span>
-                                <span id="profileName" class="value">-</span>
-                            </div>
-                            <div class="info-group">
-                                <span class="label">Email:</span>
-                                <span id="profileEmail" class="value">-</span>
-                            </div>
-                            <div class="info-group">
-                                <span class="label">Số điện thoại:</span>
-                                <span id="profilePhone" class="value">Chưa cập nhật</span>
-                            </div>
-                            <div class="info-group">
-                                <span class="label">Địa chỉ:</span>
-                                <span id="profileAddress" class="value">Chưa cập nhật</span>
-                            </div>
-                            <div class="wallet-section">
-                                <h3>Ví điện tử</h3>
-                                <div class="info-group">
-                                    <span class="label">Số dư:</span>
-                                    <span id="profileBalance" class="value">0 đ</span>
-                                </div>
-                                <form id="walletForm" class="wallet-form">
-                                    <div class="wallet-field">
-                                        <label for="topUpAmount">Số tiền nạp</label>
-                                        <input type="number" id="topUpAmount" min="10000" step="10000" placeholder="Nhập số tiền (đ)" />
-                                    </div>
-                                    <button type="submit" class="btn-primary">Nạp tiền vào ví</button>
-                                </form>
-                                <a href="pay.html" class="btn-primary" style="text-align:center; display:block; margin-top: 12px;">Mở trang Thanh toán</a>
-                            </div>
-                        </div>
-                        <button id="logout-btn" class="logout-btn">🚪 Đăng xuất</button>
-                    </div>
-                    <div id="authContent" class="auth-forms">
-                        <div style="text-align: center; padding: 40px 20px;">
-                            <h2 style="margin-bottom: 20px;">🔐 Vui lòng đăng nhập</h2>
-                            <p style="margin-bottom: 20px; color: #7a6d42;">Để xem hồ sơ và quản lý đơn hàng của bạn</p>
-                            <a href="login.html" class="btn-primary" style="display: inline-block; padding: 12px 30px; text-decoration: none;">Đăng nhập</a>
-                            <p style="margin-top: 20px; color: #7a6d42;">
-                                Chưa có tài khoản? 
-                                <a href="signup.html" style="color: #b8860b; text-decoration: underline;">Đăng ký ngay</a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </section>
         </main>
 
         <!-- NOTIFICATION -->
@@ -317,5 +274,230 @@
         });
     </script>
     <script src="./main.js"></script>
+    <script>
+        const languageStorageKey = 'chototLanguage';
+
+        const translations = {
+            vi: {
+                'nav.home': 'Trang chủ',
+                'nav.cart': 'Giỏ',
+                'nav.orders': 'Đơn hàng',
+                'nav.profile': 'Hồ sơ',
+                'nav.role': 'Vai trò',
+                'auth.login': '🔐 Đăng nhập',
+                'auth.signup': '📝 Đăng ký',
+                'home.title': 'Chào mừng đến Chợ Xịn',
+                'home.desc': 'Chọn một trong hai cách để tiếp tục trên website:',
+                'home.goWebsite': 'Đi đến website',
+                'home.stay': 'Ở lại và xem thông tin',
+                'info.title': 'Thông tin trước khi vào trang chính',
+                'info.desc': 'Đây là nơi bạn có thể xem nội dung giới thiệu, hình ảnh sản phẩm và lựa chọn trước khi đăng nhập.',
+                'info.card1.title': 'Siêu thị trực tuyến',
+                'info.card1.desc': 'Khám phá sản phẩm mới với giao diện tối và hiệu ứng độc đáo.',
+                'info.card2.title': 'Đăng nhập nhanh',
+                'info.card2.desc': 'Đăng nhập bằng email và mật khẩu để quản lý giỏ hàng ngay.',
+                'info.card3.title': 'Thông tin người dùng',
+                'info.card3.desc': 'Bạn chưa đăng nhập. Vui lòng đăng nhập hoặc đăng ký để xem thông tin cá nhân.',
+                'category.all': '📦 Tất cả',
+                'category.electronics': '📱 Điện tử',
+                'category.fashion': '👗 Thời trang',
+                'category.food': '🍔 Thực phẩm',
+                'category.home': '🛋️ Nhà cửa',
+                'category.vehicles': '🚗 Xe cộ',
+                'category.appliances': '🏠 Đồ gia dụng',
+                'category.timeLabel': '⏰ Thời gian:',
+                'time.all': 'Tất cả thời gian',
+                'time.today': 'Hôm nay',
+                'time.yesterday': 'Hôm qua',
+                'time.week': 'Tuần trước',
+                'time.month': 'Tháng trước',
+                'sort.popular': 'Phổ biến nhất',
+                'sort.priceLow': 'Giá thấp',
+                'sort.priceHigh': 'Giá cao',
+                'sort.rating': 'Đánh giá cao',
+                'search.placeholder': 'Tìm kiếm sản phẩm...',
+                'banner.title': '🛍️ Siêu Thị Trực Tuyến',
+                'banner.desc': 'Mua sắm dễ dàng - Giao hàng nhanh',
+                'banner.sell': '📣 Bán đồ ngay',
+                'empty.title': 'Không tìm thấy sản phẩm',
+                'empty.desc': 'Thử tìm kiếm từ khóa khác',
+                'about.title': 'Giới thiệu Chợ Xịn',
+                'about.desc': 'Chợ Xịn là nền tảng mua bán trực tuyến thân thiện và nhanh gọn cho người Việt.',
+                'about.expand': 'Mở rộng',
+                'about.content1': 'Chợ Xịn mang đến cho bạn trải nghiệm mua sắm an toàn, dễ dùng, với sản phẩm đa dạng từ đồ công nghệ, thời trang, đồ gia dụng đến hàng tiêu dùng hàng ngày.',
+                'about.content2': 'Chúng tôi tập trung vào giao diện nhẹ nhàng, tìm kiếm nhanh và đặt hàng tức thì, giúp bạn tiết kiệm thời gian trong mọi giao dịch.',
+                'about.content3': 'Với Chợ Xịn, bạn có thể đăng nhập, duyệt sản phẩm, quản lý đơn hàng và thanh toán dễ dàng trong cùng một nền tảng.',
+                'cart.title': '🛒 Giỏ Hàng',
+                'cart.summaryTitle': 'Tóm tắt đơn hàng',
+                'cart.subtotalLabel': 'Tổng tiền:',
+                'cart.shippingLabel': 'Phí giao:',
+                'cart.orderFeeLabel': 'Phí đơn hàng:',
+                'cart.discountLabel': 'Giảm giá:',
+                'cart.totalLabel': 'Tổng cộng:',
+                'cart.checkout': 'Đặt hàng',
+                'orders.title': '📦 Đơn Hàng Của Tôi',
+                'orders.desc': 'Bạn cũng có thể mở trang đơn hàng riêng: Xem order.html',
+                'orders.empty': 'Bạn chưa có đơn hàng nào'
+            },
+            en: {
+                'nav.home': 'Home',
+                'nav.cart': 'Cart',
+                'nav.orders': 'Orders',
+                'nav.profile': 'Profile',
+                'nav.role': 'Role',
+                'auth.login': '🔐 Login',
+                'auth.signup': '📝 Sign up',
+                'home.title': 'Welcome to Cho Xin',
+                'home.desc': 'Choose one of the two ways to continue on the website:',
+                'home.goWebsite': 'Go to website',
+                'home.stay': 'Stay and view info',
+                'info.title': 'Info before entering main page',
+                'info.desc': 'This is where you can preview introduction, product images and choose before logging in.',
+                'info.card1.title': 'Online marketplace',
+                'info.card1.desc': 'Discover new products with dark UI and unique effects.',
+                'info.card2.title': 'Quick login',
+                'info.card2.desc': 'Sign in with email and password to manage your cart right away.',
+                'info.card3.title': 'User info',
+                'info.card3.desc': 'You are not logged in. Please log in or sign up to see personal information.',
+                'category.all': '📦 All',
+                'category.electronics': '📱 Electronics',
+                'category.fashion': '👗 Fashion',
+                'category.food': '🍔 Food',
+                'category.home': '🛋️ Home',
+                'category.vehicles': '🚗 Vehicles',
+                'category.appliances': '🏠 Appliances',
+                'category.timeLabel': '⏰ Time:',
+                'time.all': 'All time',
+                'time.today': 'Today',
+                'time.yesterday': 'Yesterday',
+                'time.week': 'Last week',
+                'time.month': 'Last month',
+                'sort.popular': 'Most popular',
+                'sort.priceLow': 'Price low',
+                'sort.priceHigh': 'Price high',
+                'sort.rating': 'Top rated',
+                'search.placeholder': 'Search products...',
+                'banner.title': '🛍️ Online Marketplace',
+                'banner.desc': 'Shop easily - Fast delivery',
+                'banner.sell': '📣 Sell now',
+                'empty.title': 'No products found',
+                'empty.desc': 'Try searching for different keywords',
+                'about.title': 'About Cho Xin',
+                'about.desc': 'Cho Xin is a friendly and fast online marketplace for Vietnamese users.',
+                'about.expand': 'Expand',
+                'about.content1': 'Cho Xin offers a secure and easy shopping experience with a wide range of products from electronics, fashion, home goods to everyday essentials.',
+                'about.content2': 'We focus on a lightweight interface, fast search and instant ordering to save you time in every transaction.',
+                'about.content3': 'With Cho Xin, you can log in, browse products, manage orders and checkout easily in one platform.',
+                'cart.title': '🛒 Shopping Cart',
+                'cart.summaryTitle': 'Order Summary',
+                'cart.subtotalLabel': 'Subtotal:',
+                'cart.shippingLabel': 'Shipping fee:',
+                'cart.orderFeeLabel': 'Order fee:',
+                'cart.discountLabel': 'Discount:',
+                'cart.totalLabel': 'Total:',
+                'cart.checkout': 'Checkout',
+                'orders.title': '📦 My Orders',
+                'orders.desc': 'You can also open the separate orders page: View order.html',
+                'orders.empty': 'You have no orders yet.'
+            }
+        };
+
+        function setElementText(el, text) {
+            const icon = el.querySelector(':scope > .nav-icon');
+            if (icon) {
+                const iconHtml = icon.outerHTML;
+                el.innerHTML = `${iconHtml} ${text}`;
+                return;
+            }
+            el.textContent = text;
+        }
+
+        function updateTranslations(langCode) {
+            const dictionary = translations[langCode] || translations.vi;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                if (!key) return;
+                if (dictionary[key] !== undefined) {
+                    setElementText(el, dictionary[key]);
+                }
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.dataset.i18nPlaceholder;
+                if (!key) return;
+                if (dictionary[key] !== undefined) {
+                    el.setAttribute('placeholder', dictionary[key]);
+                }
+            });
+            const toggle = document.getElementById('languageToggle');
+            if (toggle) {
+                setElementText(toggle, elTextFromLangCode(langCode));
+            }
+            document.documentElement.lang = langCode;
+        }
+
+        function elTextFromLangCode(code) {
+            const names = {
+                vi: 'Tiếng Việt',
+                en: 'English',
+                es: 'Español',
+                fr: 'Français',
+                de: 'Deutsch',
+                zh: '中文',
+                ja: '日本語',
+                ko: '한국어',
+                th: 'ไทย',
+                ar: 'العربية'
+            };
+            return names[code] || code;
+        }
+
+        function toggleLanguageMenu() {
+            const menu = document.getElementById('languageMenu');
+            if (!menu) return;
+            menu.classList.toggle('hidden');
+        }
+
+        function closeLanguageMenu() {
+            const menu = document.getElementById('languageMenu');
+            if (!menu) return;
+            menu.classList.add('hidden');
+        }
+
+        function setLanguage(langCode) {
+            localStorage.setItem(languageStorageKey, langCode);
+            updateTranslations(langCode);
+            closeLanguageMenu();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggle = document.getElementById('languageToggle');
+            const options = Array.from(document.querySelectorAll('.language-option'));
+
+            if (toggle) {
+                toggle.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    toggleLanguageMenu();
+                });
+            }
+
+            options.forEach(option => {
+                option.addEventListener('click', () => {
+                    setLanguage(option.dataset.lang);
+                });
+            });
+
+            document.addEventListener('click', (event) => {
+                const menu = document.getElementById('languageMenu');
+                const switcher = document.querySelector('.language-switcher');
+                if (!menu || !switcher) return;
+                if (!switcher.contains(event.target)) {
+                    closeLanguageMenu();
+                }
+            });
+
+            const savedLang = localStorage.getItem(languageStorageKey) || 'vi';
+            setLanguage(savedLang);
+        });
+    </script>
 </body>
 </html>

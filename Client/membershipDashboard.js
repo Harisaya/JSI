@@ -14,7 +14,8 @@ import { getUserRole, upgradeUserRole, getUserActionLimit } from './roleManageme
  * @returns {string} - HTML string
  */
 export function createMembershipCard(tier, isCurrentTier = false, currentRole = 'free') {
-    const isHigherTier = ['plus', 'premium', 'business'].indexOf(tier.id) > ['plus', 'premium', 'business'].indexOf(currentRole);
+    const ROLE_ORDER = ['free', 'starter', 'plus', 'premium', 'business', 'enterprise'];
+    const isHigherTier = ROLE_ORDER.indexOf(tier.id) > ROLE_ORDER.indexOf(currentRole);
     
     return `
         <div class="membership-card ${isCurrentTier ? 'current-tier' : ''}" style="border-color: ${getRoleColor(tier.id)}">
@@ -148,9 +149,11 @@ export function createMembershipDashboard(userData) {
 function getUserFeeDiscount(role) {
     const discounts = {
         'free': 0,
+        'starter': 0.02,
         'plus': 0.05,
         'premium': 0.10,
-        'business': 0.20
+        'business': 0.20,
+        'enterprise': 0.25
     };
     return discounts[role] || 0;
 }
@@ -171,20 +174,28 @@ export function createMembershipComparisonTable() {
         { name: 'Giảm phí giao dịch', key: 'fee_discount' },
         { name: 'Hỗ trợ VIP 24/7', key: 'vip_support' },
         { name: 'Truy cập API', key: 'api' },
-        { name: 'Nhiều tài khoản', key: 'multiple_accounts' }
+        { name: 'Nhiều tài khoản', key: 'multiple_accounts' },
+        { name: 'Thông báo Email', key: 'email_notifications' },
+        { name: 'Báo cáo tuỳ chỉnh', key: 'custom_reports' },
+        { name: 'Quản lý nhóm bán hàng', key: 'team_management' },
+        { name: 'Đồng bộ đa kênh', key: 'multi_channel' }
     ];
 
     const featureComparison = {
-        listings: { free: 3, plus: '50', premium: '200', business: 'Unlimited' },
-        featured: { free: 0, plus: 5, premium: '20', business: 'Unlimited' },
-        boost: { free: 0, plus: 2, premium: '10', business: 'Unlimited' },
-        storefront: { free: false, plus: true, premium: true, business: true },
-        priority_support: { free: false, plus: true, premium: true, business: true },
-        analytics: { free: false, plus: true, premium: true, business: true },
-        fee_discount: { free: '0%', plus: '5%', premium: '10%', business: '20%' },
-        vip_support: { free: false, plus: false, premium: true, business: true },
-        api: { free: false, plus: false, premium: false, business: true },
-        multiple_accounts: { free: false, plus: false, premium: false, business: true }
+        listings: { free: 3, starter: 10, plus: '50', premium: '200', business: 'Unlimited', enterprise: 'Unlimited' },
+        featured: { free: 0, starter: 1, plus: 5, premium: '20', business: 'Unlimited', enterprise: 'Unlimited' },
+        boost: { free: 0, starter: 1, plus: 2, premium: '10', business: 'Unlimited', enterprise: 'Unlimited' },
+        storefront: { free: false, starter: true, plus: true, premium: true, business: true, enterprise: true },
+        priority_support: { free: false, starter: true, plus: true, premium: true, business: true, enterprise: true },
+        analytics: { free: false, starter: true, plus: true, premium: true, business: true, enterprise: true },
+        fee_discount: { free: '0%', starter: '2%', plus: '5%', premium: '10%', business: '20%', enterprise: '25%' },
+        vip_support: { free: false, starter: false, plus: false, premium: true, business: true, enterprise: true },
+        api: { free: false, starter: false, plus: false, premium: false, business: true, enterprise: true },
+        multiple_accounts: { free: false, starter: false, plus: false, premium: false, business: true, enterprise: true },
+        email_notifications: { free: true, starter: true, plus: true, premium: true, business: true, enterprise: true },
+        custom_reports: { free: false, starter: true, plus: true, premium: true, business: true, enterprise: true },
+        team_management: { free: false, starter: false, plus: false, premium: true, business: true, enterprise: true },
+        multi_channel: { free: false, starter: false, plus: false, premium: true, business: true, enterprise: true }
     };
 
     let tableHTML = `

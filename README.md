@@ -1,137 +1,122 @@
-# Firebase Marketplace Hacker Theme
+# Chợ Xịn Marketplace
 
-Ứng dụng thương mại điện tử với xác thực Firebase, giao diện hacker theme với hiệu ứng matrix.
+Dự án marketplace front-end + proxy backend cho Chợ Tốt.
+Ứng dụng bao gồm giao diện khách hàng trong `Client/` và server Node.js trong `Server/`.
+
+## Tổng quan
+
+- `Client/`: giao diện tĩnh HTML/CSS/JS
+- `Server/index.js`: backend Express proxy cho API Chợ Tốt và phục vụ static files
+- `index.js`: server bổ sung tại root cho upload ảnh Cloudinary (sử dụng `.env`)
 
 ## Tính năng
 
-- 🔐 **Xác thực người dùng** - Đăng nhập/Đăng ký với Firebase Authentication
-- 🛍️ **Marketplace** - Duyệt sản phẩm, tìm kiếm, lọc theo danh mục
-- 🛒 **Giỏ hàng** - Thêm/xóa sản phẩm, quản lý số lượng
-- 📦 **Đơn hàng** - Xem lịch sử đơn hàng
-- 👤 **Hồ sơ** - Xem thông tin người dùng
-- 💾 **Firestore** - Lưu dữ liệu người dùng, đơn hàng
+- 🛍️ Duyệt sản phẩm từ Chợ Tốt public API
+- 🔎 Tìm kiếm, lọc theo danh mục và theo khoảng thời gian
+- 🛒 Giỏ hàng với tổng tiền, phí giao hàng và đặt đơn
+- 📦 Trang đơn hàng và trang hồ sơ người dùng
+- 🌐 Backend proxy `/api/chotot` để tránh CORS
+- ☁️ Upload ảnh qua Cloudinary trên endpoint `/upload`
 
 ## Cấu trúc dự án
 
 ```
 .
-├── index.html           # Trang Marketplace chính
-├── login.html           # Trang Đăng nhập
-├── signup.html          # Trang Đăng ký
-├── src/
-│   ├── main.js          # Logic Marketplace
-│   ├── auth.js          # Logic Xác thực
-│   ├── style.css        # CSS Marketplace
-│   └── auth.css         # CSS xác thực
+├── Client/                    # Front-end khách hàng
+│   ├── index.html
+│   ├── login.html
+│   ├── signup.html
+│   ├── order.html
+│   ├── pay.html
+│   ├── product.html
+│   ├── sell.html
+│   ├── roleManagement.js
+│   ├── auth.js
+│   ├── auth.css
+│   ├── chatbot.js
+│   ├── main.js
+│   ├── style.css
+│   └── ...
+├── Img/                       # Hình ảnh dùng trong giao diện
+├── Server/                    # Backend proxy và server Node.js
+│   ├── index.js
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── middleware/multer.js
+│   ├── utils/cloudinary.js
+│   └── README.md
+├── index.js                   # Server upload Cloudinary bổ sung
+├── tasks.json                 # Tasks VS Code để chạy server
+├── .env                       # Biến môi trường cho upload Cloudinary
+├── ADMIN_SYSTEM_DOCUMENTATION.md
+├── ROLE_SYSTEM_DOCUMENTATION.md
 └── README.md
 ```
 
-## Hướng dẫn sử dụng
-
-### 1. Truy cập trang
-- **Trang chủ**: `http://localhost:8000` (Marketplace)
-- **Đăng nhập**: Click nút 🔐 góc trái hoặc vào `login.html`
-- **Đăng ký**: Click nút 📝 góc phải hoặc vào `signup.html`
-
-### 2. Đăng ký tài khoản
-- Nhập Tên, Email, Số điện thoại, Địa chỉ, Mật khẩu
-- Xác nhận mật khẩu
-- Click "Đăng ký"
-- Sẽ tự động chuyển hướng đến Marketplace sau khi thành công
-
-### 3. Đăng nhập
-- Nhập Email và Mật khẩu
-- Click "Đăng nhập"
-- Sẽ tự động chuyển hướng đến Marketplace sau khi thành công
-
-### 4. Mua sắm
-- Tìm kiếm sản phẩm bằng thanh tìm kiếm
-- Lọc theo danh mục (Điện tử, Thời trang, Thực phẩm, Nhà cửa)
-- Sắp xếp theo giá hoặc đánh giá
-- Click "➕ Thêm" để thêm vào giỏ hàng
-
-### 5. Thanh toán
-- Vào trang "🛒 Giỏ"
-- Điều chỉnh số lượng sản phẩm
-- Click "Đặt hàng"
-- Đơn hàng sẽ được lưu trong Firestore
-
-### 6. Xem đơn hàng
-- Vào trang "📦 Đơn hàng"
-- Xem danh sách các đơn hàng đã đặt
-- Xem chi tiết số tiền, trạng thái, số lượng sản phẩm
-
-### 7. Xem hồ sơ
-- Vào trang "👤 Hồ sơ"
-- Xem thông tin cá nhân
-- Click "🚪 Đăng xuất" ở góc phải để thoát
-
-## Cấu hình Firebase
-
-Firebase config được lưu trong `src/main.js`, `src/auth.js`, và `src/firebase-config.js`:
-
-```javascript
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT",
-  storageBucket: "YOUR_PROJECT.firebasestorage.app",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID",
-  measurementId: "YOUR_MEASUREMENT_ID"
-};
-```
-
-## Yêu cầu
-
-- Python 3+ (để chạy local server)
-- Trình duyệt hiện đại
-- Kết nối Internet (Firebase)
-
 ## Chạy ứng dụng
 
-1. Mở terminal ở thư mục dự án
-2. Chạy: `python -m http.server`
-3. Truy cập: `http://localhost:8000`
+### 1. Chạy backend proxy và static server
 
-## Dữ liệu lưu trong Firestore
-
-### Collection: users
-```
-{
-  name: "Tên người dùng",
-  email: "email@example.com",
-  phone: "0123456789",
-  address: "Địa chỉ đầy đủ",
-  createdAt: "2026-04-05T..."
-}
+```bash
+cd Server
+npm install
+npm start
 ```
 
-### Collection: orders
-```
-{
-  userId: "uid_của_người_dùng",
-  items: [
-    {
-      id: "product_id",
-      name: "Tên sản phẩm",
-      price: 100000,
-      quantity: 2,
-      image: "url"
-    }
-  ],
-  total: 215000,
-  status: "pending",
-  createdAt: "2026-04-05T..."
-}
+- `Server/index.js` sẽ chạy trên `http://localhost:3000`
+- Backend cung cấp endpoint `/api/chotot`
+- Server này cũng phục vụ file tĩnh từ thư mục `Client/`
+
+### 2. Mở giao diện client
+
+- Mở `http://localhost:3000/index.html`
+
+### 3. Khởi động bằng VS Code tasks
+
+- `Run Dev Server`: `python -m http.server` (phục vụ tệp tĩnh)
+- `Run Node Proxy Server`: `cd Server && npm start`
+
+Khi dùng task `Run Dev Server`, mở `http://localhost:8000/Client/index.html`.
+
+## Cấu hình môi trường (Cloudinary upload)
+
+Nếu bạn muốn sử dụng upload ảnh qua Cloudinary với server root `index.js`, tạo file `.env` chứa:
+
+```env
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
 ```
 
-## Ghi chú
+Sau đó chạy:
 
-- Dữ liệu sản phẩm hiện tại là mock data
-- Có thể kết nối với API thực tế bằng cách sửa hàm `getMockProducts()`
-- Hiệu ứng matrix có thể tắt bằng cách comment hàm `createMatrixEffect()`
+```bash
+node index.js
+```
+
+- Route upload: `POST /upload`
+- Root health check: `GET /`
+
+## Các endpoint chính
+
+- `/api/chotot`: proxy tới Chợ Tốt public API, trả về JSON kết quả và cache 1 giờ
+- `/upload`: upload ảnh lên Cloudinary (khi chạy root server)
+
+## Lưu ý
+
+- `Server/index.js` là entrypoint chính cho backend proxy và phục vụ giao diện
+- `index.js` ở root chỉ dùng cho upload Cloudinary và yêu cầu `.env`
+- Nếu server Chợ Tốt không phản hồi, app sẽ hiển thị thông báo lỗi và tiếp tục sử dụng dữ liệu hiện có
+
+## Mục tiêu dự án
+
+Chợ Xịn xây dựng mô hình marketplace giả lập, kết hợp frontend bán hàng với backend proxy API, cho phép:
+
+- Truy cập dữ liệu từ Chợ Tốt
+- Tìm kiếm và lọc sản phẩm
+- Quản lý giỏ hàng và đơn hàng
+- Đăng nhập/đăng ký người dùng
 
 ## Tác giả
 
-Firebase Marketplace - 2026
+Chợ Xịn Market - 2026

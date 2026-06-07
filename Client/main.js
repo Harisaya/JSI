@@ -184,6 +184,265 @@ function mapCategoryFromApi(apiCategoryName, title = '', description = '') {
     return 'all';
 }
 
+const PROFILE_STORAGE_KEY = 'chototProfileData';
+const COUNTRY_LABELS = {
+    VN: 'Việt Nam (+84)',
+    US: 'Mỹ (+1)',
+    IN: 'Ấn Độ (+91)',
+    SG: 'Singapore (+65)'
+};
+
+function generateUserId() {
+    return `USER-${Math.random().toString(36).slice(2, 10).toUpperCase()}`;
+}
+
+function normalizePhone(input) {
+    return String(input || '').replace(/\D/g, '');
+}
+
+function validatePhoneNumber(country, phone) {
+    const digits = normalizePhone(phone);
+    if (!digits) {
+        return { valid: false, message: 'Số điện thoại không được để trống.' };
+    }
+
+    if (country === 'VN') {
+        if (digits.startsWith('0')) {
+            if (digits.length === 10) {
+                return { valid: true, message: '' };
+            }
+            return { valid: false, message: 'Số Việt Nam có đầu 0 phải đủ 10 số.' };
+        }
+
+        if (digits.length === 9) {
+            return { valid: true, message: '' };
+        }
+
+        if (digits.length === 10) {
+            return { valid: false, message: 'Số Việt Nam bỏ 0 chỉ được nhập 9 số.' };
+        }
+
+        return { valid: false, message: 'Số điện thoại không tồn tại hoặc sai định dạng.' };
+    }
+
+    if (digits.length < 7 || digits.length > 15) {
+        return { valid: false, message: 'Số điện thoại không tồn tại hoặc sai định dạng.' };
+    }
+
+    return { valid: true, message: '' };
+}
+
+function formatPhoneDisplay(country, phone) {
+    const digits = normalizePhone(phone);
+    if (!digits) return '';
+    if (country === 'VN') {
+        if (digits.startsWith('0') && digits.length === 10) {
+            return digits;
+        }
+        if (digits.length === 9) {
+            return '0' + digits;
+        }
+    }
+    return digits;
+}
+
+function getDefaultProfile() {
+    return {
+        id: generateUserId(),
+        name: 'Khách',
+        email: 'guest@chopin.vn',
+        phone: '',
+        nationality: 'VN',
+        phoneVerified: false,
+        phoneCode: '',
+        phoneCodeSent: false,
+        address: 'Chưa cập nhật',
+        balance: 0,
+        isLoggedIn: false
+    };
+}
+
+function loadProfileData() {
+    const raw = localStorage.getItem(PROFILE_STORAGE_KEY);
+    if (!raw) {
+        return getDefaultProfile();
+    }
+
+    try {
+        const parsed = JSON.parse(raw);
+        return {
+            ...getDefaultProfile(),
+            ...parsed,
+            id: parsed.id || generateUserId()
+        };
+    } catch (e) {
+        return getDefaultProfile();
+    }
+}
+
+function saveProfileData() {
+    localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(state.profileData));
+}
+
+function getProfilePhoneDisplayText() {
+    if (!state.profileData.phone) {
+        return 'Chưa cập nhật';
+    }
+    return formatPhoneDisplay(state.profileData.nationality, state.profileData.phone);
+}
+
+function getProfileNationalityLabel() {
+    return COUNTRY_LABELS[state.profileData.nationality] || state.profileData.nationality;
+}
+
+function getProfilePhoneStatusText() {
+    if (!state.profileData.phone) {
+        return 'Chưa cập nhật';
+    }
+    return state.profileData.phoneVerified ? 'Đã xác thực' : 'Chưa xác thực';
+}
+
+function updateProfileUI() {
+    const profile = state.profileData;
+    const avatar = document.getElementById('profileAvatar');
+    const profileName = document.getElementById('profileName');
+    const profileRole = document.getElementById('profileRole');
+    const profileId = document.getElementById('profileId');
+    const profileEmail = document.getElementById('profileEmail');
+    const profilePhone = document.getElementById('profilePhoneDisplay');
+    const profileStatus = document.getElementById('profilePhoneStatus');
+    const profileNationality = document.getElementById('profileNationalityDisplay');
+    const profileAddress = document.getElementById('profileAddress');
+    const profileBalance = document.getElementById('profileBalance');
+
+    if (avatar) {
+        const initials = (profile.name || 'Khách').split(' ').filter(Boolean).map(p => p[0]).slice(0, 2).join('').toUpperCase();
+        avatar.textContent = initials || 'KH';
+    }
+    if (profileName) profileName.textContent = profile.name || 'Khách';
+    if (profileRole) profileRole.textContent = profile.isLoggedIn ? 'Người dùng đã đăng nhập' : 'Tài khoản khách';
+    if (profileId) profileId.textContent = profile.id;
+    if (profileEmail) profileEmail.textContent = profile.email || 'Chưa cập nhật';
+    if (profilePhone) profilePhone.textContent = getProfilePhoneDisplayText();
+    if (profileStatus) profileStatus.textContent = getProfilePhoneStatusText();
+    if (profileNationality) profileNationality.textContent = getProfileNationalityLabel();
+    if (profileAddress) profileAddress.textContent = profile.address || 'Chưa cập nhật';
+    if (profileBalance) profileBalance.textContent = `${Number(profile.balance || 0).toLocaleString('vi-VN')} đ`;
+}
+
+function showPhoneEditor(open) {
+    const editor = document.getElementById('phoneEditor');
+    if (!editor) return;
+    if (open) {
+        editor.classList.remove('hidden');
+        const select = document.getElementById('nationalitySelect');
+        const input = document.getElementById('phoneInput');
+        if (select) select.value = state.profileData.nationality;
+        if (input) input.value = state.profileData.phone ? formatPhoneDisplay(state.profileData.nationality, state.profileData.phone) : '';
+    } else {
+        editor.classList.add('hidden');
+    }
+}
+
+function showVerificationPanel(open, message) {
+    const panel = document.getElementById('verificationPanel');
+    const info = document.getElementById('verificationInfo');
+    const codeInput = document.getElementById('verificationCodeInput');
+    if (!panel || !info) return;
+    if (open) {
+        panel.classList.remove('hidden');
+        info.textContent = message || 'Nhập mã xác thực để hoàn tất.';
+        if (codeInput) codeInput.value = '';
+    } else {
+        panel.classList.add('hidden');
+    }
+}
+
+function handleSavePhoneClick() {
+    const select = document.getElementById('nationalitySelect');
+    const input = document.getElementById('phoneInput');
+    if (!select || !input) return;
+
+    const nationality = select.value;
+    const phoneValue = input.value.trim();
+    const validation = validatePhoneNumber(nationality, phoneValue);
+
+    if (!validation.valid) {
+        showNotification(validation.message, 'error');
+        return;
+    }
+
+    state.profileData.phone = normalizePhone(phoneValue);
+    state.profileData.nationality = nationality;
+    state.profileData.phoneVerified = false;
+    state.profileData.phoneCode = '';
+    state.profileData.phoneCodeSent = false;
+    saveProfileData();
+    updateProfileUI();
+    showPhoneEditor(false);
+    showVerificationPanel(false);
+    showNotification('Số điện thoại đã được lưu. Vui lòng xác thực để hoàn tất.', 'success');
+}
+
+function handleSendSmsVerification() {
+    if (!state.profileData.phone) {
+        showNotification('Vui lòng thêm số điện thoại trước khi xác thực.', 'error');
+        return;
+    }
+
+    const validation = validatePhoneNumber(state.profileData.nationality, state.profileData.phone);
+    if (!validation.valid) {
+        showNotification(validation.message, 'error');
+        return;
+    }
+
+    state.profileData.phoneCode = Math.floor(100000 + Math.random() * 900000).toString();
+    state.profileData.phoneCodeSent = true;
+    state.profileData.phoneVerified = false;
+    saveProfileData();
+    updateProfileUI();
+    showVerificationPanel(true, `Mã xác thực đã gửi tới ${getProfilePhoneDisplayText()}. Mã thử: ${state.profileData.phoneCode}`);
+    showNotification('Tin nhắn xác thực đã được gửi.', 'success');
+}
+
+function handleConfirmVerification() {
+    const codeInput = document.getElementById('verificationCodeInput');
+    if (!codeInput) return;
+
+    const code = codeInput.value.trim();
+    if (!state.profileData.phoneCodeSent || !state.profileData.phoneCode) {
+        showNotification('Vui lòng gửi mã xác thực trước.', 'error');
+        return;
+    }
+
+    if (code === state.profileData.phoneCode) {
+        state.profileData.phoneVerified = true;
+        state.profileData.phoneCode = '';
+        state.profileData.phoneCodeSent = false;
+        state.profileData.phoneVerifiedAt = new Date().toISOString();
+        saveProfileData();
+        updateProfileUI();
+        showVerificationPanel(false);
+        showNotification('Số điện thoại đã xác thực thành công.', 'success');
+        return;
+    }
+
+    showNotification('Mã xác thực không chính xác.', 'error');
+}
+
+function handleResendCode() {
+    handleSendSmsVerification();
+}
+
+function handleCancelPhoneEdit() {
+    showPhoneEditor(false);
+}
+
+function handleLogout() {
+    localStorage.removeItem(PROFILE_STORAGE_KEY);
+    window.location.href = 'login.html';
+}
+
 // ==================== RICH MOCK DATA ====================
 // NOTE: Mock data generation removed by request. The app will only use real Chợ Tốt API data.
 
@@ -256,6 +515,7 @@ function sampleMixedProducts(products, count = 33) {
 // ==================== GLOBAL STATE ====================
 const state = {
   currentUser: { email: 'guest@chopin.vn', name: 'Khách' },
+  profileData: loadProfileData(),
   products: [],
   filteredProducts: [],
   cart: [],
@@ -504,48 +764,69 @@ async function fetchChototProductsRealApi() {
 }
 // No minimal/mock products available. If API fails, the products list will be empty and the UI will show an error.
 
+function setLoadingState(isLoading) {
+    const loading = document.getElementById('loading');
+    const productsList = document.getElementById('productsList');
+    const emptyState = document.getElementById('emptyState');
+
+    if (loading) {
+        loading.style.display = isLoading ? 'flex' : 'none';
+    }
+    if (productsList) {
+        productsList.style.display = isLoading ? 'none' : '';
+    }
+    if (emptyState && isLoading) {
+        emptyState.style.display = 'none';
+    }
+}
+
 // ==================== LOAD PRODUCTS ====================
 async function loadProducts() {
-    // Try to load from Chợ Tốt via proxy (server cache with 1 hour TTL). Prefer real data.
-    const apiProducts = await fetchChototProductsRealApi();
+    setLoadingState(true);
+    try {
+        // Try to load from Chợ Tốt via proxy (server cache with 1 hour TTL). Prefer real data.
+        const apiProducts = await fetchChototProductsRealApi();
 
-    if (apiProducts && apiProducts.length > 0) {
-        const products = apiProducts.slice(0, 200);
-        assignPostDates(products); // Assign real post dates from API timestamps
-        state.products = products;
-        state.filteredProducts = [...state.products];
-        try {
-            sessionStorage.setItem('chototProducts', JSON.stringify(products));
-        } catch (storageErr) {
-            console.warn('Could not cache products in sessionStorage:', storageErr.message);
-        }
-        // Remove any proxy-missing banner if present
-        removeProxyBanner();
-        // Log category distribution for debugging
-        try {
-            const counts = {};
-            for (const p of state.products) {
-                const k = p.category || mapCategoryFromApi(p.categoryName || '', p.name || '', p.description || '');
-                counts[k] = (counts[k] || 0) + 1;
+        if (apiProducts && apiProducts.length > 0) {
+            const products = apiProducts.slice(0, 200);
+            assignPostDates(products); // Assign real post dates from API timestamps
+            state.products = products;
+            state.filteredProducts = [...state.products];
+            try {
+                sessionStorage.setItem('chototProducts', JSON.stringify(products));
+            } catch (storageErr) {
+                console.warn('Could not cache products in sessionStorage:', storageErr.message);
             }
-            console.log('Category distribution:', counts);
-        } catch (e) { console.log('Category distribution error', e); }
-        if (products.length < 200) {
-            showNotification(`Chợ Tốt trả về ${products.length} sản phẩm. Hiển thị tất cả kết quả thực tế.`, 'info');
+            // Remove any proxy-missing banner if present
+            removeProxyBanner();
+            // Log category distribution for debugging
+            try {
+                const counts = {};
+                for (const p of state.products) {
+                    const k = p.category || mapCategoryFromApi(p.categoryName || '', p.name || '', p.description || '');
+                    counts[k] = (counts[k] || 0) + 1;
+                }
+                console.log('Category distribution:', counts);
+            } catch (e) { console.log('Category distribution error', e); }
+            if (products.length < 200) {
+                showNotification(`Chợ Tốt trả về ${products.length} sản phẩm. Hiển thị tất cả kết quả thực tế.`, 'info');
+            } else {
+                console.log('Using real Chợ Tốt products:', state.products.length);
+            }
         } else {
-            console.log('Using real Chợ Tốt products:', state.products.length);
+            // API failed: show error and do NOT use mock data
+            showNotification('Không lấy được sản phẩm từ Chợ Tốt. Vui lòng khởi động proxy server hoặc thử lại sau.', 'error');
+            state.products = [];
+            state.filteredProducts = [];
+            console.warn('No products available from API; mocks disabled by configuration');
+            // Show persistent banner offering to redirect to local proxy server
+            showProxyMissingBanner();
         }
-    } else {
-        // API failed: show error and do NOT use mock data
-        showNotification('Không lấy được sản phẩm từ Chợ Tốt. Vui lòng khởi động proxy server hoặc thử lại sau.', 'error');
-        state.products = [];
-        state.filteredProducts = [];
-        console.warn('No products available from API; mocks disabled by configuration');
-        // Show persistent banner offering to redirect to local proxy server
-        showProxyMissingBanner();
-    }
 
-    renderProducts();
+        renderProducts();
+    } finally {
+        setLoadingState(false);
+    }
 }
 
 // ==================== FILTER & SORT ====================
@@ -1056,6 +1337,26 @@ document.addEventListener('DOMContentLoaded', () => {
             renderProducts();
         });
     }
+
+    const verifyPhoneBtn = document.getElementById('verifyPhoneBtn');
+    const changePhoneBtn = document.getElementById('changePhoneBtn');
+    const savePhoneBtn = document.getElementById('savePhoneBtn');
+    const cancelPhoneBtn = document.getElementById('cancelPhoneBtn');
+    const confirmVerifyBtn = document.getElementById('confirmVerifyBtn');
+    const resendCodeBtn = document.getElementById('resendCodeBtn');
+    const logoutBtn = document.getElementById('logout-btn');
+
+    if (verifyPhoneBtn) verifyPhoneBtn.addEventListener('click', handleSendSmsVerification);
+    if (changePhoneBtn) changePhoneBtn.addEventListener('click', () => showPhoneEditor(true));
+    if (savePhoneBtn) savePhoneBtn.addEventListener('click', handleSavePhoneClick);
+    if (cancelPhoneBtn) cancelPhoneBtn.addEventListener('click', handleCancelPhoneEdit);
+    if (confirmVerifyBtn) confirmVerifyBtn.addEventListener('click', handleConfirmVerification);
+    if (resendCodeBtn) resendCodeBtn.addEventListener('click', handleResendCode);
+    if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
+
+    updateProfileUI();
+    showPhoneEditor(false);
+    showVerificationPanel(false);
 
     console.log('✅ App initialized successfully!');
 });

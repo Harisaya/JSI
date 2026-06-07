@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hồ sơ người dùng - Chợ Xịn</title>
+    <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+    <div id="matrix-bg"></div>
+
+    <div class="app">
+        <header class="header">
+            <div class="header-wrapper">
+                <div class="logo">
+                    <span class="logo-text">💳 Chợ Xịn</span>
+                </div>
+                <nav class="header-nav">
+                    <a href="index.html" class="nav-link">🏠 Trang chủ</a>
+                    <a href="pay.html" class="nav-link">🛒 Giỏ</a>
+                    <a href="order.html" class="nav-link">📦 Đơn hàng</a>
+                    <a href="profile.html" class="nav-link active">👤 Hồ sơ</a>
+                </nav>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <section class="page-content active">
+                <div class="profile-container">
+                    <h1 class="page-title">👤 Hồ sơ người dùng</h1>
+                    <div id="profileCard" class="profile-card">
+                        <div class="profile-banner">
+                            <div class="profile-branding">
+                                <div id="profileAvatar" class="profile-avatar">KH</div>
+                                <div class="profile-title">
+                                    <h2 id="profileName">Khách</h2>
+                                    <p id="profileRole" class="profile-role">Tài khoản khách</p>
+                                </div>
+                            </div>
+                            <button id="logoutBtn" class="logout-btn">🚪 Đăng xuất</button>
+                        </div>
+
+                        <div class="profile-stat-grid">
+                            <div class="stat-card">
+                                <span>Ví hiện tại</span>
+                                <strong id="profileBalanceMini">0 đ</strong>
+                            </div>
+                            <div class="stat-card">
+                                <span>Trạng thái</span>
+                                <strong id="profilePhoneStatusMini">Chưa xác thực</strong>
+                            </div>
+                            <div class="stat-card">
+                                <span>Số điện thoại</span>
+                                <strong id="profilePhoneMini">Chưa cập nhật</strong>
+                            </div>
+                            <div class="stat-card">
+                                <span>Quốc tịch</span>
+                                <strong id="profileNationalityMini">Việt Nam</strong>
+                            </div>
+                        </div>
+
+                        <div class="profile-details">
+                            <div class="profile-row">
+                                <span class="label">ID người dùng</span>
+                                <span id="profileId" class="value">-</span>
+                            </div>
+                            <div class="profile-row">
+                                <span class="label">Email</span>
+                                <span id="profileEmail" class="value">guest@chopin.vn</span>
+                            </div>
+                            <div class="profile-row">
+                                <span class="label">Số điện thoại</span>
+                                <span id="profilePhoneDisplay" class="value">Chưa cập nhật</span>
+                            </div>
+                            <div class="profile-row">
+                                <span class="label">Trạng thái điện thoại</span>
+                                <span id="profilePhoneStatus" class="value status-badge">Chưa xác thực</span>
+                            </div>
+                            <div class="profile-row">
+                                <span class="label">Quốc tịch</span>
+                                <span id="profileNationalityDisplay" class="value">Việt Nam</span>
+                            </div>
+                            <div class="profile-row">
+                                <span class="label">Gói hiện tại</span>
+                                <span id="profileRoleType" class="value">Free</span>
+                            </div>
+                            <div class="profile-row">
+                                <span class="label">Địa chỉ</span>
+                                <span id="profileAddress" class="value">Chưa cập nhật</span>
+                            </div>
+                        </div>
+
+                        <div class="profile-actions">
+                            <button id="verifyPhoneBtn" class="btn-primary">Xác thực số điện thoại</button>
+                            <button id="changePhoneBtn" class="btn-secondary">Thay đổi / Thêm số</button>
+                            <a href="role.html" class="btn-primary" style="text-align:center; display:inline-flex; align-items:center; justify-content:center;">Mua role</a>
+                        </div>
+                        <div id="profilePhoneHint" class="profile-empty-note hidden">
+                            <p>Chưa có số điện thoại? Nhấn “Thay đổi / Thêm số” để nhập và xác thực bằng SMS.</p>
+                        </div>
+                    </div>
+
+                    <div class="profile-extra-grid">
+                        <div class="info-card">
+                            <h3>Hoạt động nhanh</h3>
+                            <p>Chỉ cần thêm số điện thoại, xác thực và bạn sẽ có thể nhận thông báo đơn hàng, khuyến mại, và quản lý thanh toán dễ dàng hơn.</p>
+                        </div>
+                        <div class="info-card">
+                            <h3>Gợi ý cá nhân</h3>
+                            <ul class="info-list">
+                                <li>Thêm số điện thoại để kích hoạt SMS xác thực.</li>
+                                <li>Kiểm tra lại thông tin cá nhân và cập nhật địa chỉ.</li>
+                                <li>Sử dụng ví để thanh toán nhanh hơn trên Chợ Xịn.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="phoneEditor" class="phone-editor hidden">
+                        <h3>Thay đổi số điện thoại</h3>
+                        <div class="form-row">
+                            <label for="nationalitySelect">Quốc tịch</label>
+                            <select id="nationalitySelect">
+                                <option value="VN">Việt Nam (+84)</option>
+                                <option value="US">Mỹ (+1)</option>
+                                <option value="IN">Ấn Độ (+91)</option>
+                                <option value="SG">Singapore (+65)</option>
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <label for="phoneInput">Số điện thoại</label>
+                            <input id="phoneInput" type="tel" placeholder="Nhập số điện thoại..." />
+                        </div>
+                        <div class="form-note">
+                            <p>Với số Việt Nam: nếu có đầu 0 thì phải đủ 10 số; nếu bỏ 0 thì chỉ được 9 số. Nếu bỏ 0 mà nhập 10 số sẽ báo lỗi.</p>
+                        </div>
+                        <div class="phone-editor-actions">
+                            <button id="savePhoneBtn" class="btn-primary">Lưu số</button>
+                            <button id="cancelPhoneBtn" class="btn-secondary">Hủy</button>
+                        </div>
+                    </div>
+
+                    <div id="verificationPanel" class="phone-verification-panel hidden">
+                        <h3>Xác thực số điện thoại</h3>
+                        <p id="verificationInfo" class="info-text">Nhấn “Xác thực số điện thoại” để nhận mã SMS.</p>
+                        <div class="form-row">
+                            <label for="verificationCodeInput">Mã xác thực</label>
+                            <input id="verificationCodeInput" type="text" maxlength="6" placeholder="Nhập mã xác thực..." />
+                        </div>
+                        <div class="phone-editor-actions">
+                            <button id="confirmVerifyBtn" class="btn-primary">Xác nhận mã</button>
+                            <button id="resendCodeBtn" class="btn-secondary">Gửi lại mã</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="authPrompt" class="auth-forms hidden">
+                    <div style="text-align: center; padding: 40px 20px;">
+                        <h2 style="margin-bottom: 20px;">🔐 Vui lòng đăng nhập</h2>
+                        <p style="margin-bottom: 20px; color: #7a6d42;">Để xem hồ sơ và quản lý thông tin cá nhân</p>
+                        <a href="login.html" class="btn-primary" style="display: inline-block; padding: 12px 30px; text-decoration: none;">Đăng nhập</a>
+                        <p style="margin-top: 20px; color: #7a6d42;">Chưa có tài khoản? <a href="signup.html" style="color: #b8860b; text-decoration: underline;">Đăng ký ngay</a></p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <div id="notification" class="notification"></div>
+    </div>
+
+    <script src="./profile.js"></script>
+</body>
+</html>

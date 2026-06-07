@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Role Membership - Chợ Xịn</title>
+    <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+    <div id="matrix-bg"></div>
+    <div class="app">
+        <header class="header">
+            <div class="header-wrapper">
+                <div class="logo">
+                    <span class="logo-text">💳 Chợ Xịn</span>
+                </div>
+                <nav class="header-nav">
+                    <a href="index.html" class="nav-link">🏠 Trang chủ</a>
+                    <a href="pay.html" class="nav-link">🛒 Giỏ</a>
+                    <a href="order.html" class="nav-link">📦 Đơn hàng</a>
+                    <a href="profile.html" class="nav-link">👤 Hồ sơ</a>
+                    <a href="role.html" class="nav-link active">⭐ Role</a>
+                </nav>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <section class="page-content active">
+                <div class="profile-container">
+                    <h1 class="page-title">⭐ Quản lý Role / Membership</h1>
+                    <div id="membershipContainer"></div>
+                    <div id="authPrompt" class="auth-forms hidden">
+                        <div style="text-align: center; padding: 40px 20px;">
+                            <h2 style="margin-bottom: 20px;">🔐 Vui lòng đăng nhập</h2>
+                            <p style="margin-bottom: 20px; color: #7a6d42;">Đăng nhập để mua role và quản lý gói thành viên.</p>
+                            <a href="login.html" class="btn-primary" style="display: inline-block; padding: 12px 30px; text-decoration: none;">Đăng nhập</a>
+                            <p style="margin-top: 20px; color: #7a6d42;">Chưa có tài khoản? <a href="signup.html" style="color: #b8860b; text-decoration: underline;">Đăng ký ngay</a></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <div id="notification" class="notification"></div>
+    </div>
+
+    <script type="module">
+        import { createMembershipDashboard, getMembershipDashboardCSS } from './membershipDashboard.js';
+        import { upgradeUserRole, downgradeUserRole } from './roleManagement.js';
+
+        const PROFILE_KEY = 'chototProfileData';
+        const defaultProfile = {
+            id: `guest-${Math.random().toString(36).slice(2, 10)}`,
+            name: 'Khách',
+            email: 'guest@chopin.vn',
+            phone: '',
+            nationality: 'VN',
+            role: 'free',
+            membershipStatus: 'inactive',
+            membershipStartDate: null,
+            membershipEndDate: null,
+            stats: {
+                listingsActive: 0,
+                totalSales: 0,
+                totalRevenue: 0,
+                rating: 0
+            },
+            phoneVerified: false,
+            address: 'Chưa cập nhật',
+            balance: 0,
+            isLoggedIn: false,
+            phoneCode: '',
+            phoneCodeSent: false
+        };
+
+        function getProfileData() {
+            const raw = localStorage.getItem(PROFILE_KEY);
+            if (!raw) return { ...defaultProfile };
+            try {
+                const parsed = JSON.parse(raw);
+                return { ...defaultProfile, ...parsed };
+            } catch (e) {
+                return { ...defaultProfile };
+            }
+        }
+
+        function saveProfileData(data) {
+            localStorage.setItem(PROFILE_KEY, JSON.stringify(data));
+        }
+
+        function showSection(id, visible) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.classList.toggle('hidden', !visible);
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            if (!notification) return;
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3500);
+        }
+
+        async function renderMembership() {
+            const profile = getProfileData();
+            const membershipContainer = document.getElementById('membershipContainer');
+            if (!membershipContainer) return;
+
+            const userData = {
+                ...profile,
+                membershipStatus: profile.role === 'free' ? 'inactive' : 'active',
+                membershipStartDate: profile.membershipStartDate,
+                membershipEndDate: profile.membershipEndDate,
+                stats: profile.stats || {},
+                role: profile.role || 'free'
+            };
+
+            membershipContainer.innerHTML = getMembershipDashboardCSS() + createMembershipDashboard(userData);
+            window.upgradeToTier = upgradeToTier;
+            window.downgradeTier = downgradeTier;
+        }
+
+        async function upgradeToTier(tierId) {
+            const profile = getProfileData();
+            if (!profile.isLoggedIn) {
+                showNotification('Bạn phải đăng nhập trước khi mua role.', 'error');
+                return;
+            }
+
+            const success = await upgradeUserRole(profile.id, tierId);
+            profile.role = tierId;
+            profile.membershipStatus = 'active';
+            profile.membershipStartDate = { seconds: Math.floor(Date.now() / 1000) };
+            profile.membershipEndDate = { seconds: Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60 };
+            saveProfileData(profile);
+            await renderMembership();
+            showNotification(success ? 'Bạn đã mua role thành công!' : 'Đã lưu tạm role mặc dù chưa chắc kết nối Firebase thành công.', success ? 'success' : 'warning');
+        }
+
+        async function downgradeTier(tierId) {
+            const profile = getProfileData();
+            if (!profile.isLoggedIn) {
+                showNotification('Bạn phải đăng nhập trước khi chuyển role.', 'error');
+                return;
+            }
+
+            const success = await downgradeUserRole(profile.id, tierId);
+            profile.role = tierId;
+            profile.membershipStatus = tierId === 'free' ? 'inactive' : 'active';
+            profile.membershipEndDate = tierId === 'free' ? null : profile.membershipEndDate;
+            saveProfileData(profile);
+            await renderMembership();
+            showNotification(success ? 'Đã chuyển role thành công.' : 'Đã lưu tạm role.', success ? 'success' : 'warning');
+        }
+
+        async function initRolePage() {
+            const profile = getProfileData();
+            if (!profile.isLoggedIn) {
+                showSection('membershipContainer', false);
+                showSection('authPrompt', true);
+                return;
+            }
+
+            showSection('authPrompt', false);
+            showSection('membershipContainer', true);
+            await renderMembership();
+        }
+
+        document.addEventListener('DOMContentLoaded', initRolePage);
+    </script>
+</body>
+</html>

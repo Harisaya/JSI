@@ -27,7 +27,7 @@ const db = getFirestore(app);
  */
 export async function upgradeUserRole(userId, newRole) {
     try {
-        const validRoles = ['free', 'plus', 'premium', 'business'];
+        const validRoles = ['free', 'starter', 'plus', 'premium', 'business', 'enterprise'];
         if (!validRoles.includes(newRole)) {
             throw new Error('Invalid role');
         }

@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
 // Firebase config
 const firebaseConfig = {
@@ -108,12 +108,48 @@ function handleLogin(event) {
     // Sign in
     signInWithEmailAndPassword(auth, email, password)
         .then(async (userCredential) => {
+            const user = userCredential.user;
+
             // Add admin role if device is admin
             if (isAdminDevice()) {
-                const userRef = doc(db, 'users', userCredential.user.uid);
+                const userRef = doc(db, 'users', user.uid);
                 await setDoc(userRef, { isAdmin: true }, { merge: true });
             }
-            
+
+            const userRef = doc(db, 'users', user.uid);
+            let savedProfile = {
+                id: user.uid,
+                name: 'Khách',
+                email: user.email || email,
+                phone: '',
+                nationality: 'VN',
+                phoneVerified: false,
+                address: 'Chưa cập nhật',
+                balance: 0,
+                isLoggedIn: true
+            };
+
+            try {
+                const userSnapshot = await getDoc(userRef);
+                if (userSnapshot.exists()) {
+                    const data = userSnapshot.data();
+                    savedProfile = {
+                        ...savedProfile,
+                        name: data.name || savedProfile.name,
+                        email: data.email || savedProfile.email,
+                        phone: data.phone || savedProfile.phone,
+                        nationality: data.nationality || savedProfile.nationality,
+                        phoneVerified: data.phoneVerified || savedProfile.phoneVerified,
+                        address: data.address || savedProfile.address,
+                        balance: data.wallet || savedProfile.balance
+                    };
+                }
+            } catch (err) {
+                console.warn('Không thể đọc profile từ Firestore:', err.message);
+            }
+
+            localStorage.setItem('chototProfileData', JSON.stringify(savedProfile));
+
             showNotification('Đăng nhập thành công! Đang chuyển hướng...', 'success');
             setTimeout(() => {
                 window.location.href = 'index.html';
@@ -209,6 +245,18 @@ function handleSignup(event) {
                     reviewCount: 0
                 }
             });
+
+            localStorage.setItem('chototProfileData', JSON.stringify({
+                id: user.uid,
+                name: name,
+                email: email,
+                phone: phone,
+                nationality: 'VN',
+                phoneVerified: false,
+                address: address,
+                balance: 0,
+                isLoggedIn: true
+            }));
             
             showNotification('Đăng ký thành công! Đang chuyển hướng...', 'success');
             setTimeout(() => {
