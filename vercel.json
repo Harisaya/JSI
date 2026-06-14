@@ -1,0 +1,63 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/**/*.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/Client/(.*)",
+      "dest": "/Client/$1"
+    },
+    {
+      "src": "/Img/(.*)",
+      "dest": "/Img/$1"
+    },
+    {
+      "src": "/",
+      "dest": "/Client/index.html"
+    },
+    {
+      "src": "/index.html",
+      "dest": "/Client/index.html"
+    },
+    {
+      "src": "/login.html",
+      "dest": "/Client/login.html"
+    },
+    {
+      "src": "/signup.html",
+      "dest": "/Client/signup.html"
+    },
+    {
+      "src": "/product.html",
+      "dest": "/Client/product.html"
+    },
+    {
+      "src": "/order.html",
+      "dest": "/Client/order.html"
+    },
+    {
+      "src": "/pay.html",
+      "dest": "/Client/pay.html"
+    },
+    {
+      "src": "/sell.html",
+      "dest": "/Client/sell.html"
+    },
+    {
+      "src": "/role.html",
+      "dest": "/Client/role.html"
+    },
+    {
+      "src": "/profile.html",
+      "dest": "/Client/profile.html"
+    }
+  ]
+}

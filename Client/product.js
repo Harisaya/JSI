@@ -97,7 +97,8 @@ function escapeHtml(str) {
         .replace(/>/g, '&gt;');
 }
 
-const API_PROXY_SERVER = 'http://localhost:3000';
+// Để chuỗi rỗng để dùng đường dẫn tương đối – hoạt động đúng trên Vercel
+const API_PROXY_SERVER = '';
 
 async function fetchChototApi(path) {
     const localUrl = path;
