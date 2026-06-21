@@ -1,3 +1,9 @@
+// LANGUAGE MANAGEMENT
+// LANGUAGE MANAGEMENT
+// LANGUAGE MANAGEMENT
+
+
+
 const languageStorageKey = 'chototLanguage';
 const languageNames = {
     vi: 'Tiếng Việt',

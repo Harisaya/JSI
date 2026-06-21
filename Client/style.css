@@ -27,6 +27,11 @@ body {
     overflow-x: hidden;
 }
 
+.logo-img {
+    display: flex;
+    margin: 20px auto;
+}
+
 #matrix-bg {
     position: fixed;
     top: 0;
@@ -343,8 +348,7 @@ button:disabled {
 .header {
     background: var(--header-bg);
     border-bottom: 2px solid #ffb300;
-    position: sticky;
-    top: 0;
+    position: relative; /* Đổi thành relative để nó cuộn đi theo trang */
     z-index: 100;
 }
 
@@ -548,7 +552,9 @@ button:disabled {
 }
 
 .carousel img {
-    max-height: 520px;
+    border-radius: 18px;
+    width: 1000px;
+    height: 600px;
 }
 
 .category-filter-panel {
