@@ -1,9 +1,9 @@
 {
   "version": 2,
+  "public": true,
   "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/Client/main.html"
-    }
+    { "source": "/api/(.*)", "destination": "/Server/index.js" },
+    { "source": "/", "destination": "/Client/main.html" },
+    { "source": "/(.*)", "destination": "/Client/$1" }
   ]
 }
