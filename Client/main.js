@@ -126,6 +126,43 @@ const CATEGORY_MAPPING = {
     name: "Đồ gia dụng",
     icon: "🏠",
   },
+  pets: {
+    keywords: [
+      "thú cưng",
+      "chó",
+      "mèo",
+      "pet",
+      "chim",
+      "cá cảnh",
+      "poodle",
+      "phốc",
+      "husky",
+      "mèo con",
+      "chó con",
+    ],
+    name: "Thú cưng",
+    icon: "🐾",
+  },
+  jobs: {
+    keywords: [
+      "việc làm",
+      "tuyển dụng",
+      "tuyển nam",
+      "tuyển nữ",
+      "thu ngân",
+      "nhân viên",
+      "tìm việc",
+      "tuyển gấp",
+      "việc làm thêm",
+      "làm thêm",
+      "parttime",
+      "fulltime",
+      "tuyển",
+      "xin việc",
+    ],
+    name: "Việc làm",
+    icon: "💼",
+  },
 };
 
 const CATEGORY_FILTERS = {
@@ -464,6 +501,52 @@ const CATEGORY_FILTERS = {
       dieuhoa: ["Tất cả", "Panasonic", "LG", "Daikin", "Sharp"],
     },
   },
+  pets: {
+    label: "Thú cưng",
+    types: [
+      {
+        key: "cho",
+        label: "Chó",
+        keywords: ["chó", "cún", "poodle", "pug", "husky", "phốc", "alaska", "samoyed"],
+      },
+      {
+        key: "meo",
+        label: "Mèo",
+        keywords: ["mèo", "mun", "anh lông ngắn", "anh lông dài", "persian"],
+      },
+      {
+        key: "khac",
+        label: "Khác",
+        keywords: ["chim", "cá cảnh", "chuột", "hamster", "thỏ"],
+      },
+    ],
+    brands: {
+      all: ["Tất cả"],
+    },
+  },
+  jobs: {
+    label: "Việc làm",
+    types: [
+      {
+        key: "banthoigian",
+        label: "Bán thời gian",
+        keywords: ["bán thời gian", "parttime", "part time", "làm thêm", "ca tối", "ca sáng", "xoay ca"],
+      },
+      {
+        key: "toanthoigian",
+        label: "Toàn thời gian",
+        keywords: ["toàn thời gian", "fulltime", "full time", "chính thức", "hành chính"],
+      },
+      {
+        key: "laodongphothong",
+        label: "Lao động phổ thông",
+        keywords: ["lao động phổ thông", "phụ kho", "bảo vệ", "phục vụ", "thu ngân", "giao hàng", "shipper", "phụ bếp"],
+      },
+    ],
+    brands: {
+      all: ["Tất cả"],
+    },
+  },
 };
 
 function getCategorySearchText(product) {
@@ -505,23 +588,80 @@ function getCategoryBrandOptions() {
 }
 
 function mapCategoryFromApi(apiCategoryName, title = "", description = "") {
-  const parts = [];
-  if (apiCategoryName) parts.push(String(apiCategoryName));
-  if (title) parts.push(String(title));
-  if (description) parts.push(String(description));
-  const hay = parts.join(" ").toLowerCase();
-  if (!hay) return "all";
-
-  // Try to match keywords across category name, title and description
-  for (const [categoryKey, categoryData] of Object.entries(CATEGORY_MAPPING)) {
-    if (categoryData.keywords.some((keyword) => hay.includes(keyword))) {
-      return categoryKey;
+  // 1. Direct mapping based on Chợ Tốt's category_name
+  if (apiCategoryName) {
+    const catName = String(apiCategoryName).toLowerCase();
+    
+    if (catName.includes("việc làm") || catName.includes("tuyển dụng") || catName.includes("việc làm dịch vụ")) {
+      return "jobs";
+    }
+    if (catName.includes("thú cưng") || catName.includes("vật nuôi") || catName.includes("chó") || catName.includes("mèo") || catName.includes("thức ăn cho thú cưng")) {
+      return "pets";
+    }
+    if (catName.includes("xe cộ") || catName.includes("xe máy") || catName.includes("ô tô") || catName.includes("xe đạp") || catName.includes("phụ tùng")) {
+      return "vehicles";
+    }
+    if (catName.includes("bất động sản") || catName.includes("nhà") || catName.includes("đất") || catName.includes("căn hộ") || catName.includes("phòng trọ")) {
+      return "home";
+    }
+    if (catName.includes("điện thoại") || catName.includes("laptop") || catName.includes("máy tính") || catName.includes("máy ảnh") || catName.includes("máy quay") || catName.includes("điện tử") || catName.includes("kỹ thuật số") || catName.includes("linh kiện") || catName.includes("thiết bị đeo")) {
+      return "electronics";
+    }
+    if (catName.includes("thời trang") || catName.includes("quần áo") || catName.includes("giày") || catName.includes("mỹ phẩm") || catName.includes("trang sức") || catName.includes("túi xách")) {
+      return "fashion";
+    }
+    if (catName.includes("gia dụng") || catName.includes("nội thất") || catName.includes("tủ lạnh") || catName.includes("máy giặt") || catName.includes("tivi") || catName.includes("ti vi")) {
+      return "appliances";
+    }
+    if (catName.includes("thực phẩm") || catName.includes("ăn uống") || catName.includes("nước uống")) {
+      return "food";
     }
   }
 
-  // Fallback: check if category name contains the mapped display name
-  for (const [categoryKey, categoryData] of Object.entries(CATEGORY_MAPPING)) {
-    if (hay.includes(categoryData.name.toLowerCase())) return categoryKey;
+  // 2. Direct title keyword checks (more specific, less noisy than description)
+  const titleLower = String(title || "").toLowerCase();
+  if (titleLower) {
+    if (titleLower.includes("tuyển dụng") || titleLower.includes("tuyển nam") || titleLower.includes("tuyển nữ") || titleLower.includes("thu ngân") || titleLower.includes("tìm việc")) {
+      return "jobs";
+    }
+    if (titleLower.includes("chó") || titleLower.includes("mèo") || titleLower.includes("cá cảnh") || titleLower.includes("poodle") || titleLower.includes("thú cưng")) {
+      return "pets";
+    }
+    
+    for (const [categoryKey, categoryData] of Object.entries(CATEGORY_MAPPING)) {
+      if (categoryData.keywords.some((keyword) => titleLower.includes(keyword))) {
+        return categoryKey;
+      }
+    }
+  }
+
+  // 3. Fallback to description keywords (careful with contact number noise for electronics)
+  const descLower = String(description || "").toLowerCase();
+  if (descLower) {
+    if (descLower.includes("tuyển dụng") || descLower.includes("lương tháng") || descLower.includes("tuyển gấp nhân viên") || descLower.includes("quán tuyển")) {
+      return "jobs";
+    }
+    if (descLower.includes("poodle") || descLower.includes("chó cảnh") || descLower.includes("mèo cảnh") || descLower.includes("cún")) {
+      return "pets";
+    }
+
+    const hay = (String(apiCategoryName || "") + " " + titleLower + " " + descLower).toLowerCase();
+    for (const [categoryKey, categoryData] of Object.entries(CATEGORY_MAPPING)) {
+      if (categoryKey === "electronics") {
+        // Exclude common noise like "điện thoại" in description (which is almost always a contact number link)
+        const hasTechKeyword = categoryData.keywords.some(
+          (keyword) => keyword !== "điện thoại" && keyword !== "công nghệ" && hay.includes(keyword)
+        );
+        const hasPhoneInTitle = (String(apiCategoryName || "") + " " + titleLower).includes("điện thoại") || titleLower.includes("iphone") || titleLower.includes("samsung");
+        if (hasTechKeyword || hasPhoneInTitle) {
+          return "electronics";
+        }
+      } else {
+        if (categoryData.keywords.some((keyword) => hay.includes(keyword))) {
+          return categoryKey;
+        }
+      }
+    }
   }
 
   return "all";
@@ -939,37 +1079,58 @@ function parseApiTimestamp(value) {
   return null;
 }
 
+function getShiftedTimestamp(productId, originalTimestamp) {
+  let baseTime = Number(originalTimestamp);
+  if (!baseTime || isNaN(baseTime)) {
+    baseTime = Date.now();
+  } else if (baseTime < 1000000000000) {
+    baseTime = baseTime * 1000;
+  }
+
+  let seed;
+  if (!productId) {
+    seed = Math.random();
+  } else {
+    let hash = 0;
+    const strId = String(productId);
+    for (let i = 0; i < strId.length; i++) {
+      hash = strId.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    seed = (Math.abs(hash) % 1000) / 1000;
+  }
+
+  let offsetMs = 0;
+  if (seed < 0.2) {
+    // 20% within 1-24 hours
+    offsetMs = Math.floor(seed * 5 * 24 * 60 * 60 * 1000);
+  } else if (seed < 0.5) {
+    // 30% within 1-7 days
+    const minDays = 1;
+    const maxDays = 7;
+    const days = minDays + ((seed - 0.2) / 0.3) * (maxDays - minDays);
+    offsetMs = Math.floor(days * 24 * 60 * 60 * 1000);
+  } else if (seed < 0.8) {
+    // 30% within 1-4 weeks (7 to 28 days)
+    const minDays = 7;
+    const maxDays = 28;
+    const days = minDays + ((seed - 0.5) / 0.3) * (maxDays - minDays);
+    offsetMs = Math.floor(days * 24 * 60 * 60 * 1000);
+  } else {
+    // 20% within 1-3 months (30 to 90 days)
+    const minDays = 30;
+    const maxDays = 90;
+    const days = minDays + ((seed - 0.8) / 0.2) * (maxDays - minDays);
+    offsetMs = Math.floor(days * 24 * 60 * 60 * 1000);
+  }
+
+  return baseTime - offsetMs;
+}
+
 function assignPostDates(products) {
-  const now = Date.now();
-
   products.forEach((product) => {
-    // Nếu API có timestamp thật thì dùng luôn
-    const timestampMs = parseApiTimestamp(product.timestamp);
-
-    if (timestampMs) {
-      product._postDate = new Date(timestampMs);
-      return;
-    }
-
-    // Nếu không có timestamp thì tạo thời gian ngẫu nhiên
-    const rand = Math.random();
-    let minutesAgo;
-
-    if (rand < 0.3) {
-      // 30% trong 24 giờ
-      minutesAgo = Math.floor(Math.random() * 24 * 60);
-    } else if (rand < 0.6) {
-      // 30% từ 1-7 ngày
-      minutesAgo = Math.floor((1 + Math.random() * 6) * 24 * 60);
-    } else if (rand < 0.8) {
-      // 20% từ 1-4 tuần
-      minutesAgo = Math.floor((7 + Math.random() * 21) * 24 * 60);
-    } else {
-      // 20% từ 1-3 tháng
-      minutesAgo = Math.floor((30 + Math.random() * 60) * 24 * 60);
-    }
-
-    product._postDate = new Date(now - minutesAgo * 60 * 1000);
+    const rawTimestamp = product.timestamp;
+    const shiftedMs = getShiftedTimestamp(product.id, rawTimestamp);
+    product._postDate = new Date(shiftedMs);
   });
 }
 

@@ -46,6 +46,53 @@ function formatDate(timestamp) {
     return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
 }
 
+function getShiftedTimestamp(productId, originalTimestamp) {
+    let baseTime = Number(originalTimestamp);
+    if (!baseTime || isNaN(baseTime)) {
+        baseTime = Date.now();
+    } else if (baseTime < 1000000000000) {
+        baseTime = baseTime * 1000;
+    }
+
+    let seed;
+    if (!productId) {
+        seed = Math.random();
+    } else {
+        let hash = 0;
+        const strId = String(productId);
+        for (let i = 0; i < strId.length; i++) {
+            hash = strId.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        seed = (Math.abs(hash) % 1000) / 1000;
+    }
+
+    let offsetMs = 0;
+    if (seed < 0.2) {
+        // 20% within 1-24 hours
+        offsetMs = Math.floor(seed * 5 * 24 * 60 * 60 * 1000);
+    } else if (seed < 0.5) {
+        // 30% within 1-7 days
+        const minDays = 1;
+        const maxDays = 7;
+        const days = minDays + ((seed - 0.2) / 0.3) * (maxDays - minDays);
+        offsetMs = Math.floor(days * 24 * 60 * 60 * 1000);
+    } else if (seed < 0.8) {
+        // 30% within 1-4 weeks (7 to 28 days)
+        const minDays = 7;
+        const maxDays = 28;
+        const days = minDays + ((seed - 0.5) / 0.3) * (maxDays - minDays);
+        offsetMs = Math.floor(days * 24 * 60 * 60 * 1000);
+    } else {
+        // 20% within 1-3 months (30 to 90 days)
+        const minDays = 30;
+        const maxDays = 90;
+        const days = minDays + ((seed - 0.8) / 0.2) * (maxDays - minDays);
+        offsetMs = Math.floor(days * 24 * 60 * 60 * 1000);
+    }
+
+    return baseTime - offsetMs;
+}
+
 function formatRelativeTime(timestamp) {
     if (!timestamp) return 'Mới đăng';
     
@@ -247,6 +294,8 @@ function renderProductDetail(product) {
 
     // Get the actual timestamp field - try multiple field names
     const timestamp = product.list_time || product.post_date || product.createdTime || product.createTime || product.published_time || product.listTime;
+    const productId = product.ad_id || product.id;
+    const shiftedTimestamp = getShiftedTimestamp(productId, timestamp);
     
     const images = getImageUrls(product);
     const title = product.subject || product.body || product.title || 'Sản phẩm Chợ Tốt';
@@ -259,7 +308,7 @@ function renderProductDetail(product) {
     const detailRows = [
         { label: 'Danh mục', value: product.category_name || '-' },
         { label: 'Khu vực', value: location || product.location || '-' },
-        { label: 'Đăng lúc', value: formatRelativeTime(timestamp) },
+        { label: 'Đăng lúc', value: formatRelativeTime(shiftedTimestamp) },
         { label: 'Trạng thái', value: product.status || '-' },
         { label: 'Diện tích', value: product.size ? `${product.size} ${product.size_unit_string || 'm²'}` : (product.living_size ? `${product.living_size} m²` : '-') },
         { label: 'Số phòng', value: product.rooms || '-' },
