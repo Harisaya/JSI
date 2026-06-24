@@ -1881,6 +1881,62 @@ function handleInfoHome() {
 document.addEventListener("DOMContentLoaded", () => {
   createMatrixEffect();
 
+  updateAuthButtons();
+  function updateAuthButtons() {
+    const loginBtn = document.getElementById("login-btn-corner");
+    const signupBtn = document.getElementById("signup-btn-corner");
+    const logoutBtn = document.getElementById("logout-btn-corner");
+    const userMenu = document.getElementById("user-menu");
+
+    const profile = JSON.parse(
+        localStorage.getItem("chototProfileData") || "{}"
+    );
+
+    if (profile.isLoggedIn) {
+
+        if (loginBtn) loginBtn.style.display = "none";
+        if (signupBtn) signupBtn.style.display = "none";
+        if (logoutBtn) logoutBtn.style.display = "block";
+        if (userMenu) userMenu.style.display = "block";
+
+        const nameEl = document.getElementById("user-name");
+
+        if (nameEl) {
+            nameEl.textContent =
+                profile.name ||
+                profile.displayName ||
+                "Người dùng";
+        }
+
+        const balanceEl =
+            document.getElementById("dropdown-balance");
+
+        if (balanceEl) {
+            balanceEl.textContent =
+                (profile.balance || 0).toLocaleString("vi-VN") + "đ";
+        }
+
+    } else {
+
+        if (loginBtn) loginBtn.style.display = "block";
+        if (signupBtn) signupBtn.style.display = "block";
+        if (logoutBtn) logoutBtn.style.display = "none";
+        if (userMenu) userMenu.style.display = "none";
+    }
+}
+
+const dropdownLogoutBtn =
+    document.getElementById("dropdown-logout-btn");
+
+if (dropdownLogoutBtn) {
+    dropdownLogoutBtn.onclick = () => {
+        localStorage.removeItem("chototProfileData");
+        location.reload();
+    };
+}
+
+});
+
   const goWebsiteBtn = document.getElementById("goWebsiteBtn");
   const stayBtn = document.getElementById("stayBtn");
   const infoHomeBtn = document.getElementById("infoHomeBtn");
@@ -2032,10 +2088,40 @@ document.addEventListener("DOMContentLoaded", () => {
   showPhoneEditor(false);
   showVerificationPanel(false);
 
-  console.log("✅ App initialized successfully!");
-});
+// ==================== AUTH BUTTON UI ====================
+function updateAuthButtons() {
+  const loginBtn = document.getElementById("login-btn-corner");
+  const signupBtn = document.getElementById("signup-btn-corner");
+  const logoutBtn = document.getElementById("logout-btn-corner");
+
+  const profile = JSON.parse(
+    localStorage.getItem("chototProfileData") || "{}"
+  );
+
+  const isLoggedIn = profile.isLoggedIn === true;
+
+  if (isLoggedIn) {
+    if (loginBtn) loginBtn.style.display = "none";
+    if (signupBtn) signupBtn.style.display = "none";
+    if (logoutBtn) logoutBtn.style.display = "block";
+  } else {
+    if (loginBtn) loginBtn.style.display = "block";
+    if (signupBtn) signupBtn.style.display = "block";
+    if (logoutBtn) logoutBtn.style.display = "none";
+  }
+}
+
+window.handleLogoutCorner = function () {
+  localStorage.removeItem("chototProfileData");
+  location.reload();
+};
 
 // ==================== BÁN ĐỒ NGAY ====================
 function handleSellClick() {
   window.location.href = 'sell.html';
 }
+
+window.handleLogoutCorner = function () {
+  localStorage.removeItem("chototProfileData");
+  location.reload();
+};

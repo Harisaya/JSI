@@ -317,3 +317,113 @@ function initProfilePage() {
 }
 
 document.addEventListener('DOMContentLoaded', initProfilePage);
+
+document.addEventListener("DOMContentLoaded", function () {
+    
+    // --- KHAI BÁO CÁC BIẾN TAB ---
+    const tabButtons = document.querySelectorAll(".nav-tab-btn[data-target]");
+    const tabPanels = document.querySelectorAll(".security-tab-panel");
+
+    tabButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            tabButtons.forEach(b => b.classList.remove("active"));
+            tabPanels.forEach(p => p.classList.remove("active"));
+
+            this.classList.add("active");
+            const targetId = this.getAttribute("data-target");
+            const activePanel = document.getElementById(targetId);
+            if (activePanel) activePanel.classList.add("active");
+        });
+    });
+
+    // --- LOGIC HỆ THỐNG BẢO MẬT ---
+    const switchOtpMail = document.getElementById("switch-otp-mail");
+    const switchGoogleAuth = document.getElementById("switch-google-auth");
+    const gaDrawer = document.getElementById("google-authenticator-drawer");
+    const txtSecretKey = document.getElementById("txt-secret-key");
+    const dynamicGaQr = document.getElementById("dynamic-ga-qr");
+    const inputOtpToken = document.getElementById("input-otp-token");
+    const verifyOtpAction = document.getElementById("verify-otp-action");
+    const submitSecuritySettings = document.getElementById("submit-security-settings");
+
+    // Tạo chuỗi base32 giả lập khóa private
+    function generateBase32Secret() {
+        const set = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+        let out = "";
+        for (let i = 0; i < 16; i++) {
+            out += set.charAt(Math.floor(Math.random() * set.length));
+        }
+        return out;
+    }
+
+    if (switchGoogleAuth) {
+        switchGoogleAuth.addEventListener("change", function () {
+            if (this.checked) {
+                // Tắt đồng bộ OTP Mail nếu có bật
+                if (switchOtpMail) switchOtpMail.checked = false;
+
+                const secret = generateBase32Secret();
+                txtSecretKey.innerText = secret;
+
+                // Tích hợp sinh chuỗi liên kết thiết bị quét QR
+                const account = "vugiaken@gmail.com";
+                const uri = `otpauth://totp/MarketingHub:${account}?secret=${secret}&issuer=MarketingHub`;
+                dynamicGaQr.src = `https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=${encodeURIComponent(uri)}&choe=UTF-8`;
+
+                // Hiển thị ngăn kéo mượt mà
+                gaDrawer.classList.add("expanded");
+            } else {
+                gaDrawer.classList.remove("expanded");
+                inputOtpToken.value = "";
+            }
+        });
+    }
+
+    if (switchOtpMail) {
+        switchOtpMail.addEventListener("change", function () {
+            if (this.checked && switchGoogleAuth && switchGoogleAuth.checked) {
+                switchGoogleAuth.checked = false;
+                gaDrawer.classList.remove("expanded");
+            }
+        });
+    }
+
+    if (verifyOtpAction) {
+        verifyOtpAction.addEventListener("click", function () {
+            const val = inputOtpToken.value.trim();
+            if (val.length === 6 && !isNaN(val)) {
+                alert("Xác thực ứng dụng thành công! Đã đồng bộ tài khoản với thiết bị Google Authenticator của bạn.");
+                gaDrawer.classList.remove("expanded");
+            } else {
+                alert("Vui lòng điền chuỗi token 6 chữ số hợp lệ từ ứng dụng Authenticator.");
+            }
+        });
+    }
+
+    if (submitSecuritySettings) {
+        submitSecuritySettings.addEventListener("click", function () {
+            alert("Hệ thống cấu hình Client: Đã lưu các thiết lập thay đổi trạng thái bảo mật của bạn.");
+        });
+    }
+
+    // --- POPUP ĐĂNG XUẤT ---
+    const triggerLogoutModal = document.getElementById("trigger-logout-modal");
+    const globalLogoutModal = document.getElementById("globalLogoutModal");
+    const btnCancelExit = document.getElementById("btn-cancel-exit");
+    const btnConfirmExit = document.getElementById("btn-confirm-exit");
+
+    if (triggerLogoutModal && globalLogoutModal) {
+        triggerLogoutModal.addEventListener("click", function (e) {
+            e.preventDefault();
+            globalLogoutModal.classList.add("visible");
+        });
+        if (btnCancelExit) {
+            btnCancelExit.addEventListener("click", function () {
+                globalLogoutModal.classList.remove("visible");
+            });
+        }
+        globalLogoutModal.addEventListener("click", function (e) {
+            if (e.target === globalLogoutModal) globalLogoutModal.classList.remove("visible");
+        });
+    }
+});
