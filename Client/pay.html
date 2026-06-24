@@ -18,6 +18,7 @@
                     <a href="order.html" class="nav-link">📦 Đơn hàng</a>
                     <a href="profile.html" class="nav-link">👤 Hồ sơ</a>
                     <a href="login.html" class="nav-link">🔐 Đăng nhập</a>
+                    <button id="openDepositBtn" class="btn-deposit-nav" onclick="openDepositModal()">💰 Nạp tiền</button>
                 </nav>
             </div>
         </header>
@@ -78,5 +79,205 @@
             </section>
         </main>
     </div>
+<!-- MODAL NẠP TIỀN -->
+<div id="depositModal" class="deposit-overlay" style="display:none;" onclick="handleOverlayClick(event)">
+    <div class="deposit-modal" id="depositModalBox">
+        <div class="deposit-modal-header">
+            <span class="deposit-modal-icon">💰</span>
+            <h3>Nạp tiền vào tài khoản</h3>
+            <button class="deposit-close-btn" onclick="closeDepositModal()">✕</button>
+        </div>
+
+        <!-- Chưa đăng nhập -->
+        <div id="depositNotLoggedIn" class="deposit-not-logged" style="display:none;">
+            <div class="deposit-lock-icon">🔒</div>
+            <p>Bạn cần <strong>đăng nhập</strong> để sử dụng tính năng nạp tiền.</p>
+            <a href="login.html" class="btn-primary" style="margin-top:16px; display:inline-block;">Đăng nhập ngay</a>
+        </div>
+
+        <!-- Đã đăng nhập - form nạp -->
+        <div id="depositForm" style="display:none;">
+            <div class="deposit-bank-info">
+                <div class="deposit-bank-logo">🏦</div>
+                <div class="deposit-bank-details">
+                    <span class="deposit-bank-name">BIDV</span>
+                    <span class="deposit-bank-account">7530345471</span>
+                    <span class="deposit-bank-owner">Chủ tài khoản: Chợ Xịn</span>
+                </div>
+                <button class="deposit-copy-btn" onclick="copyAccountNumber()" title="Sao chép số tài khoản">
+                    📋 Sao chép
+                </button>
+            </div>
+
+            <div class="deposit-divider">
+                <span>Nhập số tiền muốn nạp</span>
+            </div>
+
+            <div class="deposit-input-wrap">
+                <span class="deposit-currency">₫</span>
+                <input type="number" id="depositAmount" class="deposit-input" placeholder="Ví dụ: 100000" min="10000" step="1000" />
+            </div>
+            <div class="deposit-quick-amounts">
+                <button class="deposit-quick-btn" onclick="setDepositAmount(50000)">50K</button>
+                <button class="deposit-quick-btn" onclick="setDepositAmount(100000)">100K</button>
+                <button class="deposit-quick-btn" onclick="setDepositAmount(200000)">200K</button>
+                <button class="deposit-quick-btn" onclick="setDepositAmount(500000)">500K</button>
+                <button class="deposit-quick-btn" onclick="setDepositAmount(1000000)">1M</button>
+            </div>
+
+            <div id="depositCurrentBalance" class="deposit-current-balance"></div>
+
+            <button class="deposit-confirm-btn" id="depositConfirmBtn" onclick="confirmDeposit()">
+                ✅ Xác nhận nạp tiền
+            </button>
+        </div>
+
+        <!-- Kết quả sau nạp -->
+        <div id="depositSuccess" style="display:none;">
+            <div class="deposit-success-icon">🎉</div>
+            <h4 class="deposit-success-title">Nạp tiền thành công!</h4>
+            <div class="deposit-new-balance-wrap">
+                <span class="deposit-new-balance-label">Số dư hiện tại</span>
+                <span class="deposit-new-balance-value" id="depositNewBalance">0đ</span>
+            </div>
+            <div class="deposit-balance-stats">
+                <div class="deposit-stat-row">
+                    <span>Tổng tiền nạp</span>
+                    <span id="depositTotalDeposit">0đ</span>
+                </div>
+                <div class="deposit-stat-row">
+                    <span>Số dư đã sử dụng</span>
+                    <span id="depositTotalUsed">0đ</span>
+                </div>
+                <div class="deposit-stat-row">
+                    <span>Giảm giá</span>
+                    <span id="depositDiscount">0%</span>
+                </div>
+            </div>
+            <button class="deposit-confirm-btn" onclick="closeDepositModal()" style="margin-top:16px;">
+                Đóng
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    const PROFILE_KEY = 'chototProfileData';
+
+    function getProfile() {
+        try {
+            const raw = localStorage.getItem(PROFILE_KEY);
+            return raw ? JSON.parse(raw) : null;
+        } catch(e) { return null; }
+    }
+
+    function saveProfile(profile) {
+        localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+    }
+
+    function formatMoney(n) {
+        return Number(n || 0).toLocaleString('vi-VN') + 'đ';
+    }
+
+    window.openDepositModal = function() {
+        const modal = document.getElementById('depositModal');
+        modal.style.display = 'flex';
+        setTimeout(() => modal.classList.add('deposit-overlay-visible'), 10);
+
+        const profile = getProfile();
+        const notLogged = document.getElementById('depositNotLoggedIn');
+        const form = document.getElementById('depositForm');
+        const success = document.getElementById('depositSuccess');
+
+        success.style.display = 'none';
+
+        if (!profile || !profile.isLoggedIn) {
+            notLogged.style.display = 'flex';
+            form.style.display = 'none';
+        } else {
+            notLogged.style.display = 'none';
+            form.style.display = 'block';
+            document.getElementById('depositAmount').value = '';
+            const balEl = document.getElementById('depositCurrentBalance');
+            balEl.textContent = 'Số dư hiện tại: ' + formatMoney(profile.balance || 0);
+        }
+    };
+
+    window.closeDepositModal = function() {
+        const modal = document.getElementById('depositModal');
+        modal.classList.remove('deposit-overlay-visible');
+        setTimeout(() => { modal.style.display = 'none'; }, 280);
+    };
+
+    window.handleOverlayClick = function(e) {
+        if (e.target === document.getElementById('depositModal')) {
+            closeDepositModal();
+        }
+    };
+
+    window.setDepositAmount = function(amount) {
+        document.getElementById('depositAmount').value = amount;
+    };
+
+    window.copyAccountNumber = function() {
+        navigator.clipboard.writeText('7530345471').then(() => {
+            const btn = document.querySelector('.deposit-copy-btn');
+            const orig = btn.textContent;
+            btn.textContent = '✅ Đã sao chép!';
+            setTimeout(() => { btn.textContent = orig; }, 1800);
+        }).catch(() => {
+            alert('Số tài khoản: 7530345471');
+        });
+    };
+
+    window.confirmDeposit = function() {
+        const amountInput = document.getElementById('depositAmount');
+        const amount = parseInt(amountInput.value);
+
+        if (!amount || amount < 10000) {
+            amountInput.style.borderColor = '#e53e3e';
+            amountInput.placeholder = 'Số tiền tối thiểu là 10,000đ';
+            setTimeout(() => {
+                amountInput.style.borderColor = '';
+                amountInput.placeholder = 'Ví dụ: 100000';
+            }, 2000);
+            return;
+        }
+
+        const profile = getProfile();
+        if (!profile || !profile.isLoggedIn) return;
+
+        // Add to balance
+        const oldBalance = Number(profile.balance || 0);
+        const newBalance = oldBalance + amount;
+        const totalDeposited = Number(profile.totalDeposited || 0) + amount;
+
+        profile.balance = newBalance;
+        profile.totalDeposited = totalDeposited;
+        saveProfile(profile);
+
+        // Show success
+        document.getElementById('depositForm').style.display = 'none';
+        const successEl = document.getElementById('depositSuccess');
+        successEl.style.display = 'block';
+
+        document.getElementById('depositNewBalance').textContent = formatMoney(newBalance);
+        document.getElementById('depositTotalDeposit').textContent = formatMoney(totalDeposited);
+        document.getElementById('depositTotalUsed').textContent = formatMoney(profile.totalUsed || 0);
+        document.getElementById('depositDiscount').textContent = '0%';
+
+        // Animate new balance
+        const balEl = document.getElementById('depositNewBalance');
+        balEl.style.transform = 'scale(1.15)';
+        setTimeout(() => { balEl.style.transform = 'scale(1)'; }, 400);
+    };
+
+    // Press Esc to close
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeDepositModal();
+    });
+})();
+</script>
 </body>
 </html>

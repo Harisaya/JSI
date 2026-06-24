@@ -44,6 +44,34 @@
                         <div id="siteInfoUserContent" class="info-card-content">
                             <p>Bạn chưa đăng nhập. Vui lòng <a href="login.html">đăng nhập</a> hoặc <a href="signup.html">đăng ký</a> để xem thông tin cá nhân.</p>
                         </div>
+                        <!-- Bảng số dư - chỉ hiển thị khi đăng nhập -->
+                        <div id="siteInfoBalancePanel" class="site-balance-panel" style="display:none;">
+                            <div class="site-balance-user-row">
+                                <div class="site-balance-avatar" id="siteBalanceAvatar">KH</div>
+                                <div class="site-balance-user-info">
+                                    <span class="site-balance-username" id="siteBalanceName">Người dùng</span>
+                                    <span class="site-balance-role">Tài khoản đã xác thực</span>
+                                </div>
+                            </div>
+                            <div class="site-balance-main">
+                                <span class="site-balance-label">Số dư hiện tại</span>
+                                <span class="site-balance-amount" id="siteBalanceAmount">0đ</span>
+                            </div>
+                            <div class="site-balance-stats">
+                                <div class="site-balance-stat-card">
+                                    <span class="site-balance-stat-label">Tổng tiền nạp</span>
+                                    <span class="site-balance-stat-value" id="siteBalanceTotalDeposit">0đ</span>
+                                </div>
+                                <div class="site-balance-stat-card">
+                                    <span class="site-balance-stat-label">Số dư đã sử dụng</span>
+                                    <span class="site-balance-stat-value" id="siteBalanceTotalUsed">0đ</span>
+                                </div>
+                                <div class="site-balance-stat-card">
+                                    <span class="site-balance-stat-label">Giảm giá</span>
+                                    <span class="site-balance-stat-value" id="siteBalanceDiscount">0%</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -277,6 +305,54 @@
                 aboutToggle.textContent = expanded ? 'Thu gọn' : 'Mở rộng';
             });
         });
+
+        // Render bảng số dư ở site-info panel
+        (function renderSiteInfoBalance() {
+            function formatMoney(n) {
+                return Number(n || 0).toLocaleString('vi-VN') + 'đ';
+            }
+            function refreshBalancePanel() {
+                try {
+                    const raw = localStorage.getItem('chototProfileData');
+                    if (!raw) return;
+                    const profile = JSON.parse(raw);
+                    if (!profile || !profile.isLoggedIn) return;
+
+                    // Hiện panel
+                    const panel = document.getElementById('siteInfoBalancePanel');
+                    const notLoggedMsg = document.getElementById('siteInfoUserContent');
+                    if (panel) panel.style.display = 'block';
+                    if (notLoggedMsg) notLoggedMsg.style.display = 'none';
+
+                    // Avatar initials
+                    const initials = (profile.name || 'Khách').split(' ').filter(Boolean).map(p => p[0]).slice(0, 2).join('').toUpperCase() || 'KH';
+                    const avatarEl = document.getElementById('siteBalanceAvatar');
+                    if (avatarEl) avatarEl.textContent = initials;
+
+                    const nameEl = document.getElementById('siteBalanceName');
+                    if (nameEl) nameEl.textContent = profile.name || 'Người dùng';
+
+                    const amountEl = document.getElementById('siteBalanceAmount');
+                    if (amountEl) amountEl.textContent = formatMoney(profile.balance || 0);
+
+                    const totalDepEl = document.getElementById('siteBalanceTotalDeposit');
+                    if (totalDepEl) totalDepEl.textContent = formatMoney(profile.totalDeposited || 0);
+
+                    const totalUsedEl = document.getElementById('siteBalanceTotalUsed');
+                    if (totalUsedEl) totalUsedEl.textContent = formatMoney(profile.totalUsed || 0);
+
+                    const discountEl = document.getElementById('siteBalanceDiscount');
+                    if (discountEl) discountEl.textContent = '0%';
+                } catch(e) {}
+            }
+            document.addEventListener('DOMContentLoaded', refreshBalancePanel);
+            // Lắng nghe thay đổi localStorage từ tab khác
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'chototProfileData') refreshBalancePanel();
+            });
+            // Cũng chạy ngay nếu DOM đã sẵn sàng
+            if (document.readyState !== 'loading') refreshBalancePanel();
+        })();
     </script>
     <script src="./main.js"></script>
     <script>

@@ -2034,3 +2034,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   console.log("✅ App initialized successfully!");
 });
+
+// ==================== BÁN ĐỒ NGAY ====================
+function handleSellClick() {
+  window.location.href = 'sell.html';
+}
