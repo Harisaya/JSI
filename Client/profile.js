@@ -318,112 +318,107 @@ function initProfilePage() {
 
 document.addEventListener('DOMContentLoaded', initProfilePage);
 
+// Giả định bạn đã import cấu hình firebase trước đó
 document.addEventListener("DOMContentLoaded", function () {
     
-    // --- KHAI BÁO CÁC BIẾN TAB ---
-    const tabButtons = document.querySelectorAll(".nav-tab-btn[data-target]");
-    const tabPanels = document.querySelectorAll(".security-tab-panel");
+    // --- 1. LOGIC CHUYỂN ĐỔI QUA LẠI GIỮA CÁC TAB TAB ---
+    const menuButtons = document.querySelectorAll(".menu-tab-btn[data-target]");
+    const contentPanels = document.querySelectorAll(".profile-tab-panel");
 
-    tabButtons.forEach(button => {
-        button.addEventListener("click", function () {
-            tabButtons.forEach(b => b.classList.remove("active"));
-            tabPanels.forEach(p => p.classList.remove("active"));
+    menuButtons.forEach(btn => {
+        btn.addEventListener("click", function () {
+            // Gỡ bỏ class active cũ
+            menuButtons.forEach(b => b.classList.remove("active"));
+            contentPanels.forEach(p => p.classList.remove("active"));
 
+            // Thêm active cho Tab vừa được kích hoạt
             this.classList.add("active");
             const targetId = this.getAttribute("data-target");
-            const activePanel = document.getElementById(targetId);
-            if (activePanel) activePanel.classList.add("active");
+            const targetPanel = document.getElementById(targetId);
+            if (targetPanel) {
+                targetPanel.classList.add("active");
+            }
         });
     });
 
-    // --- LOGIC HỆ THỐNG BẢO MẬT ---
-    const switchOtpMail = document.getElementById("switch-otp-mail");
-    const switchGoogleAuth = document.getElementById("switch-google-auth");
-    const gaDrawer = document.getElementById("google-authenticator-drawer");
-    const txtSecretKey = document.getElementById("txt-secret-key");
-    const dynamicGaQr = document.getElementById("dynamic-ga-qr");
-    const inputOtpToken = document.getElementById("input-otp-token");
-    const verifyOtpAction = document.getElementById("verify-otp-action");
-    const submitSecuritySettings = document.getElementById("submit-security-settings");
+    // --- 2. LẤY DỮ LIỆU ĐỘNG TỪ FIREBASE ĐỔ VÀO INPUTS ---
+    firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            const uid = user.uid;
+            
+            // Tham chiếu tới Node dữ liệu user trên Realtime Database
+            const userDatabaseRef = firebase.database().ref('users/' + uid);
+            userDatabaseRef.on('value', (snapshot) => {
+                const firebaseData = snapshot.val() || {};
 
-    // Tạo chuỗi base32 giả lập khóa private
-    function generateBase32Secret() {
-        const set = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
-        let out = "";
-        for (let i = 0; i < 16; i++) {
-            out += set.charAt(Math.floor(Math.random() * set.length));
+                // Đổ dữ liệu số dư lên Khối Ví của tôi
+                const currentWallet = firebaseData.wallet || 0;
+                const totalDeposit = firebaseData.totalDeposit || 0;
+                const totalUsed = firebaseData.totalUsed || 0;
+
+                document.getElementById("stat-wallet").innerText = currentWallet.toLocaleString('vi-VN') + "đ";
+                document.getElementById("stat-total-deposit").innerText = totalDeposit.toLocaleString('vi-VN') + "đ";
+                document.getElementById("stat-total-used").innerText = totalUsed.toLocaleString('vi-VN') + "đ";
+
+                // Điền thông tin vào các Input thuộc Khối Hồ sơ của bạn
+                document.getElementById("info-username").value = firebaseData.username || user.displayName || "ddddd";
+                document.getElementById("info-email").value = user.email || "Chưa cập nhật";
+                document.getElementById("info-phone").value = firebaseData.phone || "Chưa cập nhật";
+                document.getElementById("info-fullname").value = firebaseData.fullname || "Chưa cập nhật";
+                document.getElementById("info-telegram").value = firebaseData.telegramId || "Chưa cập nhật";
+                
+                // Điền thời gian đăng ký và đăng nhập hệ thống
+                document.getElementById("info-created-at").value = firebaseData.createdAt || "2026-06-24 11:42:42";
+                document.getElementById("info-last-login").value = firebaseData.lastLogin || "2026-06-24 11:42:42";
+            });
+        } else {
+            // Nếu chưa login thì chuyển hướng ngay về trang đăng nhập chính
+            window.location.href = "main.html";
         }
-        return out;
-    }
+    });
+
+    // --- 3. ĐÓNG / MỞ KHỐI GOOGLE AUTHENTICATOR ---
+    const switchGoogleAuth = document.getElementById("switch-google-auth");
+    const switchOtpMail = document.getElementById("switch-otp-mail");
+    const gaDrawerArea = document.getElementById("ga-drawer-area");
+    const gaSecretString = document.getElementById("ga-secret-string");
+    const gaQrcodeImage = document.getElementById("ga-qrcode-image");
 
     if (switchGoogleAuth) {
         switchGoogleAuth.addEventListener("change", function () {
             if (this.checked) {
-                // Tắt đồng bộ OTP Mail nếu có bật
+                // Tắt DTP Mail nếu bật Google Auth (như yêu cầu đề bài)
                 if (switchOtpMail) switchOtpMail.checked = false;
+                
+                const mockSecret = "JAYSTORES2FAKEYSECRET";
+                gaSecretString.innerText = mockSecret;
+                const qrUrl = `https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=otpauth://totp/JayStores?secret=${mockSecret}&choe=UTF-8`;
+                gaQrcodeImage.src = qrUrl;
 
-                const secret = generateBase32Secret();
-                txtSecretKey.innerText = secret;
-
-                // Tích hợp sinh chuỗi liên kết thiết bị quét QR
-                const account = "vugiaken@gmail.com";
-                const uri = `otpauth://totp/MarketingHub:${account}?secret=${secret}&issuer=MarketingHub`;
-                dynamicGaQr.src = `https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=${encodeURIComponent(uri)}&choe=UTF-8`;
-
-                // Hiển thị ngăn kéo mượt mà
-                gaDrawer.classList.add("expanded");
+                gaDrawerArea.classList.add("expanded");
             } else {
-                gaDrawer.classList.remove("expanded");
-                inputOtpToken.value = "";
+                gaDrawerArea.classList.remove("expanded");
             }
         });
     }
 
-    if (switchOtpMail) {
-        switchOtpMail.addEventListener("change", function () {
-            if (this.checked && switchGoogleAuth && switchGoogleAuth.checked) {
-                switchGoogleAuth.checked = false;
-                gaDrawer.classList.remove("expanded");
-            }
-        });
+    // --- 4. LOGIC HIỂN THỊ POPUP ĐĂNG XUẤT CHUẨN ---
+    const logoutSidebarBtn = document.getElementById("logout-sidebar-btn");
+    const modalLogoutOverlay = document.getElementById("modalLogoutOverlay");
+    const confirmLogoutAction = document.getElementById("confirmLogoutAction");
+    const cancelLogoutAction = document.getElementById("cancelLogoutAction");
+
+    if (logoutSidebarBtn) {
+        logoutSidebarBtn.addEventListener("click", () => modalLogoutOverlay.classList.add("visible"));
     }
-
-    if (verifyOtpAction) {
-        verifyOtpAction.addEventListener("click", function () {
-            const val = inputOtpToken.value.trim();
-            if (val.length === 6 && !isNaN(val)) {
-                alert("Xác thực ứng dụng thành công! Đã đồng bộ tài khoản với thiết bị Google Authenticator của bạn.");
-                gaDrawer.classList.remove("expanded");
-            } else {
-                alert("Vui lòng điền chuỗi token 6 chữ số hợp lệ từ ứng dụng Authenticator.");
-            }
-        });
+    if (cancelLogoutAction) {
+        cancelLogoutAction.addEventListener("click", () => modalLogoutOverlay.classList.remove("visible"));
     }
-
-    if (submitSecuritySettings) {
-        submitSecuritySettings.addEventListener("click", function () {
-            alert("Hệ thống cấu hình Client: Đã lưu các thiết lập thay đổi trạng thái bảo mật của bạn.");
-        });
-    }
-
-    // --- POPUP ĐĂNG XUẤT ---
-    const triggerLogoutModal = document.getElementById("trigger-logout-modal");
-    const globalLogoutModal = document.getElementById("globalLogoutModal");
-    const btnCancelExit = document.getElementById("btn-cancel-exit");
-    const btnConfirmExit = document.getElementById("btn-confirm-exit");
-
-    if (triggerLogoutModal && globalLogoutModal) {
-        triggerLogoutModal.addEventListener("click", function (e) {
-            e.preventDefault();
-            globalLogoutModal.classList.add("visible");
-        });
-        if (btnCancelExit) {
-            btnCancelExit.addEventListener("click", function () {
-                globalLogoutModal.classList.remove("visible");
+    if (confirmLogoutAction) {
+        confirmLogoutAction.addEventListener("click", function () {
+            firebase.auth().signOut().then(() => {
+                window.location.href = "main.html";
             });
-        }
-        globalLogoutModal.addEventListener("click", function (e) {
-            if (e.target === globalLogoutModal) globalLogoutModal.classList.remove("visible");
         });
     }
 });

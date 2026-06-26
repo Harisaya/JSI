@@ -164,122 +164,180 @@
             </section>
         </main>
 
-        <div id="notification" class="notification"></div>
-    </div>
-<div class="security-page-wrapper">
+<div class="client-profile-section profile-container">
     
-    <aside class="security-navigation-sidebar">
-        <button class="nav-tab-btn" data-target="thong-tin">
+    <aside class="profile-sidebar">
+        <button class="menu-tab-btn active" data-target="thong-tin">
             <i class="fas fa-user"></i> Thông tin cá nhân
         </button>
-        <button class="nav-tab-btn active" data-target="bao-mat">
+        <button class="menu-tab-btn" data-target="bao-mat">
             <i class="fas fa-shield-alt"></i> Bảo mật
         </button>
-        <button class="nav-tab-btn" data-target="nhat-ky">
+        <button class="menu-tab-btn" data-target="nhat-ky">
             <i class="fas fa-history"></i> Nhật ký hoạt động
         </button>
-        <button class="nav-tab-btn" data-target="bien-dong">
+        <button class="menu-tab-btn" data-target="bien-dong">
             <i class="fas fa-wallet"></i> Biến động số dư
         </button>
-        <button class="nav-tab-btn" data-target="mat-khau">
+        <button class="menu-tab-btn" data-target="mat-khau">
             <i class="fas fa-key"></i> Thay đổi mật khẩu
         </button>
-        <button class="nav-tab-btn logout-action-btn" id="trigger-logout-modal">
+        <button class="menu-tab-btn btn-logout-trigger" id="logout-sidebar-btn">
             <i class="fas fa-sign-out-alt"></i> Đăng xuất
         </button>
     </aside>
 
-    <main class="security-main-content">
+    <main class="profile-main-content">
         
-        <div id="bao-mat" class="security-tab-panel active">
+        <div id="thong-tin" class="profile-tab-panel active">
             
-            <div class="premium-security-card">
-                <div class="card-top-header">
-                    <h2 class="main-card-title">Bảo mật tài khoản</h2>
-                    <div class="blue-active-bar"></div>
+            <div class="info-white-card">
+                <h3 class="card-section-title">Ví của tôi</h3>
+                <div class="balance-display-box">
+                    <span class="balance-label">Số dư hiện tại</span>
+                    <div class="balance-amount-value" id="stat-wallet">0đ</div>
                 </div>
-                
-                <div class="card-body-content">
-                    <div class="security-toggle-item">
-                        <span class="toggle-description">Xác minh đăng nhập bằng <strong>DTP Mail</strong>:</span>
-                        <label class="ios-switch">
-                            <input type="checkbox" id="switch-otp-mail">
-                            <span class="ios-slider"></span>
-                        </label>
+                <div class="balance-stats-row">
+                    <div class="stat-sub-box">
+                        <span class="stat-sub-label">Tổng tiền nạp</span>
+                        <div class="stat-sub-val" id="stat-total-deposit">0đ</div>
                     </div>
-
-                    <div class="security-toggle-item">
-                        <span class="toggle-description">Gửi thông báo về mail khi đăng nhập thành công:</span>
-                        <label class="ios-switch">
-                            <input type="checkbox" id="switch-login-alert" checked>
-                            <span class="ios-slider"></span>
-                        </label>
+                    <div class="stat-sub-box">
+                        <span class="stat-sub-label">Số dư đã sử dụng</span>
+                        <div class="stat-sub-val" id="stat-total-used">0đ</div>
                     </div>
-
-                    <div class="security-toggle-item">
-                        <span class="toggle-description">Đúng Trình Duyệt và IP mua hàng mới có thể xem đơn hàng:</span>
-                        <label class="ios-switch">
-                            <input type="checkbox" id="switch-ip-lock">
-                            <span class="ios-slider"></span>
-                        </label>
-                    </div>
-
-                    <button type="button" id="submit-security-settings" class="blue-action-submit-btn">CẬP NHẬT</button>
                 </div>
             </div>
 
-            <div class="premium-security-card mt-25">
-                <div class="security-toggle-item no-border">
-                    <span class="toggle-description">Xác minh đăng nhập bằng <strong>Google Authenticator</strong>:</span>
-                    <label class="ios-switch">
-                        <input type="checkbox" id="switch-google-auth">
-                        <span class="ios-slider"></span>
+            <div class="info-white-card mt-20">
+                <div class="card-header-flex">
+                    <h3 class="card-section-title">Hồ sơ của bạn</h3>
+                    <button type="button" class="btn-blue-action" id="edit-profile-trigger">Chỉnh sửa thông tin</button>
+                </div>
+                
+                <div class="profile-inputs-grid">
+                    <div class="input-field-group">
+                        <label>Tên đăng nhập</label>
+                        <input type="text" id="info-username" readonly value="ddddd">
+                    </div>
+                    <div class="input-field-group">
+                        <label>Địa chỉ Email</label>
+                        <input type="text" id="info-email" readonly value="...">
+                    </div>
+                    <div class="input-field-group">
+                        <label>Số điện thoại</label>
+                        <input type="text" id="info-phone" readonly value="">
+                    </div>
+                    <div class="input-field-group">
+                        <label>Họ và Tên</label>
+                        <input type="text" id="info-fullname" readonly value="">
+                    </div>
+                    <div class="input-field-group">
+                        <label>Telegram Chat ID</label>
+                        <input type="text" id="info-telegram" readonly value="">
+                    </div>
+                    <div class="input-field-group">
+                        <label>Thiết bị</label>
+                        <input type="text" id="info-device" readonly value="Mozilla/5.0 (Windows NT 10.0; Win64)">
+                    </div>
+                    <div class="input-field-group">
+                        <label>Đăng ký vào lúc</label>
+                        <input type="text" id="info-created-at" readonly value="...">
+                    </div>
+                    <div class="input-field-group">
+                        <label>Đăng nhập gần nhất</label>
+                        <input type="text" id="info-last-login" readonly value="...">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="bao-mat" class="profile-tab-panel">
+            <div class="info-white-card">
+                <h3 class="card-section-title">Bảo mật tài khoản</h3>
+                <div class="security-row-item">
+                    <span>Xác minh đăng nhập bằng <strong>DTP Mail</strong>:</span>
+                    <label class="switch-toggle">
+                        <input type="checkbox" id="switch-otp-mail">
+                        <span class="switch-slider"></span>
                     </label>
                 </div>
+                <div class="security-row-item">
+                    <span>Gửi thông báo về mail khi đăng nhập thành công:</span>
+                    <label class="switch-toggle">
+                        <input type="checkbox" id="switch-login-alert" checked>
+                        <span class="switch-slider"></span>
+                    </label>
+                </div>
+                <div class="security-row-item">
+                    <span>Đúng Trình Duyệt và IP mua hàng mới có thể xem đơn hàng:</span>
+                    <label class="switch-toggle">
+                        <input type="checkbox" id="switch-ip-lock">
+                        <span class="switch-slider"></span>
+                    </label>
+                </div>
+                <button type="button" class="btn-blue-submit-large" id="btn-save-security">CẬP NHẬT</button>
+            </div>
 
-                <div id="google-authenticator-drawer" class="ga-drawer collapsed">
-                    <div class="ga-drawer-inner">
-                        <div class="ga-setup-flex-container">
-                            <div class="ga-qr-holder">
-                                <img id="dynamic-ga-qr" src="" alt="Mã QR Google Authenticator">
+            <div class="info-white-card mt-20">
+                <div class="security-row-item no-border-bottom">
+                    <span>Xác minh đăng nhập bằng <strong>Google Authenticator</strong>:</span>
+                    <label class="switch-toggle">
+                        <input type="checkbox" id="switch-google-auth">
+                        <span class="switch-slider"></span>
+                    </label>
+                </div>
+                <div id="ga-drawer-area" class="ga-expandable-drawer">
+                    <div class="ga-drawer-container">
+                        <div class="ga-qr-box">
+                            <img id="ga-qrcode-image" src="" alt="QR Auth">
+                        </div>
+                        <div class="ga-guide-box">
+                            <p class="guide-txt">- Sử dụng điện thoại tải App Google Authenticator sau đó quét mã QR để nhận mã xác minh.</p>
+                            <p class="guide-txt note-red">- Nếu bật Xác minh đăng nhập bằng DTP Mail thì không bật Google Authenticator và ngược lại.</p>
+                            <div class="manual-key-container">
+                                <span>Khóa cấu hình thủ công:</span>
+                                <code id="ga-secret-string">GENERATING...</code>
                             </div>
-                            <div class="ga-text-instructions">
-                                <p class="step-guide-text">- Sử dụng điện thoại tải App Google Authenticator sau đó quét mã QR để nhận mã xác minh.</p>
-                                <p class="step-guide-text">- Mã QR sẽ được thay đổi khi bạn tắt xác minh.</p>
-                                <p class="step-guide-text warning-note">- Nếu bật Xác minh đăng nhập bằng DTP Mail thì không bật Google Authenticator và ngược lại.</p>
-                                
-                                <div class="secret-token-box">
-                                    <span class="token-label">Khóa cấu hình thủ công:</span>
-                                    <code id="txt-secret-key">GENERATING...</code>
-                                </div>
-
-                                <div class="token-verification-row">
-                                    <input type="text" id="input-otp-token" placeholder="Nhập mã 6 chữ số" maxlength="6">
-                                    <button type="button" id="verify-otp-action" class="btn-verify-yellow">KÍCH HOẠT NGAY</button>
-                                </div>
+                            <div class="verification-submit-line">
+                                <input type="text" id="ga-token-verify" placeholder="Nhập mã 6 chữ số" maxlength="6">
+                                <button type="button" class="btn-verify-blue">KÍCH HOẠT NGAY</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
 
-        <div id="thong-tin" class="security-tab-panel"></div>
-        <div id="nhat-ky" class="security-tab-panel"></div>
-        <div id="bien-dong" class="security-tab-panel"></div>
-        <div id="mat-khau" class="security-tab-panel"></div>
+        <div id="nhat-ky" class="profile-tab-panel">
+            <div class="info-white-card">
+                <h3 class="card-section-title">Nhật ký hoạt động</h3>
+                <p style="color:#64748b; font-size:14px;">Đang tải dữ liệu từ máy chủ...</p>
+            </div>
+        </div>
+        <div id="bien-dong" class="profile-tab-panel">
+            <div class="info-white-card">
+                <h3 class="card-section-title">Biến động số dư</h3>
+                <p style="color:#64748b; font-size:14px;">Không có dữ liệu biến động.</p>
+            </div>
+        </div>
+        <div id="mat-khau" class="profile-tab-panel">
+            <div class="info-white-card">
+                <h3 class="card-section-title">Thay đổi mật khẩu</h3>
+                <p style="color:#64748b; font-size:14px;">Vui lòng điền thông tin mật khẩu mới.</p>
+            </div>
+        </div>
     </main>
 </div>
 
-<div class="custom-logout-overlay" id="globalLogoutModal">
-    <div class="custom-logout-box">
-        <div class="warn-circle">!</div>
-        <h3>Bạn có chắc không?</h3>
-        <p>Bạn sẽ bị đăng xuất khỏi tài khoản khi nhấn Đồng ý</p>
-        <div class="modal-btn-row">
-            <button class="modal-btn-yes" id="btnConfirmExit">Đồng ý</button>
-            <button class="modal-btn-no" id="btnCancelExit">Huỷ bỏ</button>
+<div class="logout-modal-backdrop" id="modalLogoutOverlay">
+    <div class="logout-modal-dialog">
+        <div class="exclamation-icon-circle">!</div>
+        <h3 class="modal-dialog-title">Bạn có chắc không?</h3>
+        <p class="modal-dialog-desc">Bạn sẽ bị đăng xuất khỏi tài khoản khi nhấn Đồng ý</p>
+        <div class="modal-buttons-flex">
+            <button type="button" class="btn-modal-yes" id="confirmLogoutAction">Đồng ý</button>
+            <button type="button" class="btn-modal-no" id="cancelLogoutAction">Huỷ bỏ</button>
         </div>
     </div>
 </div>
