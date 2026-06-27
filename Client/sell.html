@@ -3,69 +3,193 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bán Hàng - Chợ Xịn</title>
+    <title>Đăng Bán Sản Phẩm - MARKETPLACE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="./style.css" />
 </head>
-<body>
+<body class="bg-light">
     <div class="sell-page">
-        <header class="header">
-            <div class="header-wrapper">
+        <header class="header shadow-sm bg-white sticky-top">
+            <div class="header-wrapper container d-flex justify-content-between align-items-center py-3">
                 <div class="logo">
-                    <span class="logo-text">💳 MARKETPLACE</span>
+                    <span class="logo-text fw-bold fs-4 text-primary">💳 MARKETPLACE</span>
                 </div>
-                <nav class="header-nav">
-                    <a href="index.html" class="nav-link">🏠 Trang chủ</a>
-                    <a href="order.html" class="nav-link">📦 Đơn hàng</a>
-                    <a href="login.html" class="nav-link">🔐 Đăng nhập</a>
+                <nav class="header-nav d-flex gap-3 align-items-center">
+                    <a href="index.html" class="nav-link text-dark">🏠 Trang chủ</a>
+                    <a href="order.html" class="nav-link text-dark">📦 Đơn hàng</a>
+                    <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#utilityModal">⚙️ Tiện ích & Quản lý</button>
+                    <a href="#" id="logout-btn" class="nav-link text-danger" style="cursor: pointer;">🚪 Đăng xuất</a>
                 </nav>
             </div>
         </header>
 
-        <main class="main-content">
-            <section class="sell-intro">
-                <div class="banner">
-                    <h2>📣 Trang Bán Hàng</h2>
-                    <p>Chào mừng đến trang bán hàng. Tại đây bạn có thể đăng bán sản phẩm mới hoặc quản lý các mặt hàng đang chờ duyệt.</p>
-                    <a href="index.html" class="btn-primary">Tiếp tục mua sắm</a>
-                </div>
-            </section>
+        <main class="main-content container my-4">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 col-md-10">
+                    <div class="card border-0 shadow-sm rounded-3">
+                        <div class="card-header bg-primary text-white py-3">
+                            <h2 class="fs-4 mb-0 text-center">📝 Đăng Bán Sản Phẩm Mới</h2>
+                            <p class="mb-0 text-center fs-6 text-white-50">Điền đầy đủ thông tin mặt hàng của bạn giống như trên các sàn TMĐT (Shopee, Lazada, Chợ Tốt...)</p>
+                        </div>
+                        
+                        <div class="card-body p-4">
+                            <form id="sell-product-form">
+                                <div class="mb-3">
+                                    <label for="product-name" class="form-label fw-bold">Tên sản phẩm <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="product-name" placeholder="Ví dụ: Điện thoại iPhone 12 Pro cũ 99%" required>
+                                </div>
 
-            <section class="sell-details">
-                <div class="info-card">
-                    <h3>Đăng bán mặt hàng</h3>
-                    <p>Hiện tại tính năng bán hàng đang trong giai đoạn phát triển. Bạn có thể chuẩn bị thông tin sau:</p>
-                    <ul>
-                        <li>Tên sản phẩm</li>
-                        <li>Mô tả sản phẩm</li>
-                        <li>Giá bán</li>
-                        <li>Hình ảnh sản phẩm</li>
-                    </ul>
+                                <div class="mb-3">
+                                    <label for="product-category" class="form-label fw-bold">Danh mục <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="product-category" required>
+                                        <option value="" selected disabled>-- Chọn danh mục sản phẩm --</option>
+                                        <option value="electronics">Đồ điện tử (Điện thoại, Laptop...)</option>
+                                        <option value="fashion">Thời trang & Phụ kiện</option>
+                                        <option value="home">Nhà cửa & Đời sống</option>
+                                        <option value="vehicles">Phương tiện (Xe máy, Ô tô...)</option>
+                                        <option value="other">Khác</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="product-price" class="form-label fw-bold">Giá bán (VNĐ) <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="product-price" placeholder="Ví dụ: 5000000" min="0" required>
+                                        <span class="input-group-text">VNĐ</span>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="product-desc" class="form-label fw-bold">Mô tả chi tiết <span class="text-danger">*</span></label>
+                                    <textarea class="form-control" id="product-desc" rows="5" placeholder="Mô tả tình trạng, nguồn gốc, bảo hành hoặc phụ kiện đi kèm..." required></textarea>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="product-image" class="form-label fw-bold">Hình ảnh sản phẩm (URL) <span class="text-danger">*</span></label>
+                                    <input type="url" class="form-control" id="product-image" placeholder="Dán đường dẫn hình ảnh (URL) vào đây" required>
+                                    <div class="form-text">Bạn có thể dùng link ảnh từ Imgur, Google Drive hoặc các trang lưu trữ ảnh trực tuyến.</div>
+                                </div>
+
+                                <div class="mb-3 text-center border p-2 rounded bg-light" id="image-preview-box" style="min-height: 150px; display: flex; align-items: center; justify-content: center;">
+                                    <span class="text-muted" id="preview-placeholder">🖼️ Hình ảnh sẽ được hiển thị xem trước ở đây</span>
+                                    <img id="image-preview" src="" alt="Xem trước sản phẩm" class="img-fluid rounded" style="max-height: 200px; display: none;">
+                                </div>
+
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                                    <button type="button" class="btn btn-outline-success me-md-2" data-bs-toggle="modal" data-bs-target="#marketingModal">🎁 Gói đẩy bài / Quảng cáo</button>
+                                    <a href="index.html" class="btn btn-outline-secondary me-md-2">Hủy bỏ</a>
+                                    <button type="submit" class="btn btn-primary px-4">Đăng sản phẩm</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-            </section>
+            </div>
         </main>
+    </div>
+
+    <div class="modal fade" id="utilityModal" tabindex="-1" aria-labelledby="utilityModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="utilityModalLabel">🛠️ Bảng điều khiển tiện ích & Cài đặt</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted">Chọn các tính năng mở rộng để quản lý gian hàng của bạn:</p>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded bg-light text-center h-100 d-flex flex-column justify-content-between">
+                                <div>
+                                    <h6>📊 Thống kê gian hàng</h6>
+                                    <small class="text-muted">Xem lượt xem, lượt thích sản phẩm của bạn.</small>
+                                </div>
+                                <button class="btn btn-sm btn-outline-success mt-3 w-100" onclick="runAction('Xem thống kê')">Xem ngay</button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded bg-light text-center h-100 d-flex flex-column justify-content-between">
+                                <div>
+                                    <h6>🏷️ Quản lý mã giảm giá</h6>
+                                    <small class="text-muted">Tạo voucher khuyến mãi thu hút người mua.</small>
+                                </div>
+                                <button class="btn btn-sm btn-outline-success mt-3 w-100" onclick="runAction('Tạo mã giảm giá')">Tạo mã</button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded bg-light text-center h-100 d-flex flex-column justify-content-between">
+                                <div>
+                                    <h6>💬 Trả lời tin nhắn tự động</h6>
+                                    <small class="text-muted">Cài đặt tin nhắn chào mừng khách hàng.</small>
+                                </div>
+                                <button class="btn btn-sm btn-outline-success mt-3 w-100" onclick="runAction('Cài đặt tin nhắn')">Cài đặt</button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded bg-light text-center h-100 d-flex flex-column justify-content-between">
+                                <div>
+                                    <h6>🚚 Cài đặt vận chuyển</h6>
+                                    <small class="text-muted">Chọn đơn vị giao hàng và phí ship.</small>
+                                </div>
+                                <button class="btn btn-sm btn-outline-success mt-3 w-100" onclick="runAction('Cài đặt vận chuyển')">Thiết lập</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="marketingModal" tabindex="-1" aria-labelledby="marketingModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="marketingModalLabel">🚀 Gói đẩy bài & Quảng cáo sản phẩm</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Chọn các gói tiếp thị để sản phẩm của bạn tiếp cận hàng ngàn khách hàng nhanh hơn:</p>
+                    <div class="list-group">
+                        <label class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            <div>
+                                <input class="form-check-input me-1" type="radio" name="ads-package" value="basic" checked>
+                                <strong>Gói Cơ Bản (Miễn phí)</strong>
+                                <br><small class="text-muted">Bài đăng hiển thị bình thường trên chợ.</small>
+                            </div>
+                            <span class="badge bg-secondary rounded-pill">0đ</span>
+                        </label>
+                        <label class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            <div>
+                                <input class="form-check-input me-1" type="radio" name="ads-package" value="premium">
+                                <strong>Gói Nổi Bật (Lên top 24h)</strong>
+                                <br><small class="text-muted">Ưu tiên hiển thị ở trang chủ.</small>
+                            </div>
+                            <span class="badge bg-warning rounded-pill text-dark">50.000đ</span>
+                        </label>
+                        <label class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            <div>
+                                <input class="form-check-input me-1" type="radio" name="ads-package" value="vip">
+                                <strong>Gói Siêu VIP (Lên top 7 ngày)</strong>
+                                <br><small class="text-muted">Tiếp cận khách hàng tối đa.</small>
+                            </div>
+                            <span class="badge bg-danger rounded-pill">299.000đ</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-warning" onclick="confirmAds()">Áp dụng gói</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-auth-compat.js"></script>
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyCEF-miiOOQ-yb42KTGYozNjUY8zImq2Ec",
-            authDomain: "lesson3-b336e.firebaseapp.com",
-            projectId: "lesson3-b336e",
-            storageBucket: "lesson3-b336e.firebasestorage.app",
-            messagingSenderId: "757879338973",
-            appId: "1:757879338973:web:431390ad9fee86d23aa834",
-            measurementId: "G-DQ1BM8DWMD"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        auth.onAuthStateChanged(user => {
-            if (!user) {
-                alert('Bạn cần đăng nhập để truy cập trang bán hàng.');
-                window.location.href = 'login.html';
-            }
-        });
-    </script>
+    <script src="./sell.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>

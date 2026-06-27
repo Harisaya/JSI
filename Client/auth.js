@@ -361,3 +361,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+// Hàm tiện ích để ghi nhật ký hoạt động vào Firestore
+async function logActivity(userId, userEmail, actionType, description) {
+    try {
+        const logRef = doc(collection(db, 'activity_logs')); // Tự động sinh ID ngẫu nhiên cho log
+        await setDoc(logRef, {
+            userId: userId,
+            email: userEmail,
+            action: actionType, // Ví dụ: 'LOGIN', 'SIGNUP', 'LOGOUT'
+            description: description,
+            timestamp: new Date().toISOString()
+        });
+        console.log(`[Log] ${actionType} recorded.`);
+    } catch (error) {
+        console.error("Lỗi khi ghi nhật ký hoạt động:", error);
+    }
+}
