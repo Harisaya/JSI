@@ -349,9 +349,10 @@ function renderProductDetail(product) {
                         <div><span>🕒</span> ${escapeHtml(formatRelativeTime(timestamp))}</div>
                     </div>
                     <div class="product-actions-row">
-                        <button class="btn-primary detail-action-btn" onclick="window.location.href='index.html'">Chat</button>
-                        <button class="btn-secondary detail-action-btn">Hiện số</button>
+                        <button type="button" class="btn-primary detail-action-btn" id="detailChatBtn">💬 Chat</button>
+                        <button type="button" class="btn-secondary detail-action-btn" id="detailPhoneBtn">📞 Hiện số</button>
                     </div>
+                    <div class="detail-phone-result" id="detailPhoneResult"></div>
                     <div class="seller-card">
                         <div class="seller-avatar">${sellerAvatar ? `<img src="${escapeHtml(sellerAvatar)}" alt="${escapeHtml(sellerName)}">` : '👤'}</div>
                         <div>
@@ -403,6 +404,203 @@ function renderProductDetail(product) {
             <div id="relatedProducts" class="related-products-grid">Đang tải gợi ý...</div>
         </section>
     `;
+
+    // Enable click-to-zoom fullscreen lightbox on the gallery images
+    ensureLightbox();
+    const galleryImgs = root.querySelectorAll('.product-image-carousel .carousel-item img');
+    galleryImgs.forEach((img, i) => {
+        img.classList.add('zoomable-image');
+        img.addEventListener('click', () => openLightbox(images, i, product));
+    });
+    if (galleryImgs.length === 0) {
+        const fallback = root.querySelector('.product-image-fallback');
+        if (fallback) fallback.style.cursor = 'default';
+    }
+
+    // Wire the detail-page action buttons (Chat / Hiện số)
+    const detailChatBtn = document.getElementById('detailChatBtn');
+    const detailPhoneBtn = document.getElementById('detailPhoneBtn');
+    const detailPhoneResult = document.getElementById('detailPhoneResult');
+    if (detailChatBtn) detailChatBtn.addEventListener('click', openChatWidget);
+    if (detailPhoneBtn && detailPhoneResult) {
+        detailPhoneBtn.addEventListener('click', () => {
+            const phone = getProductPhone(product);
+            detailPhoneResult.textContent = phone
+                ? `📱 Số liên hệ: ${phone}`
+                : 'Người bán chưa công khai số điện thoại — hãy nhắn qua Chat.';
+            detailPhoneResult.classList.add('visible');
+        });
+    }
+}
+
+// ==================== IMAGE LIGHTBOX ====================
+let lightboxState = { images: [], index: 0, product: null };
+
+function openChatWidget() {
+    const cbtn = document.getElementById('chatbot-btn');
+    if (cbtn) {
+        cbtn.click();
+    } else {
+        window.location.href = 'index.html';
+    }
+}
+
+function getProductPhone(product) {
+    if (!product) return '';
+    const raw = product.phone
+        || product.contact_phone
+        || (product.seller_info && product.seller_info.phone)
+        || product.sellerPhone
+        || '';
+    if (!raw) return '';
+    const s = String(raw).replace(/\s+/g, '');
+    return s.length >= 6 ? s.slice(0, s.length - 4) + '****' : s;
+}
+
+function ensureLightbox() {
+    if (document.getElementById('imageLightbox')) return;
+    const lb = document.createElement('div');
+    lb.id = 'imageLightbox';
+    lb.className = 'lightbox-overlay';
+    lb.innerHTML = `
+        <button type="button" class="lightbox-close" aria-label="Đóng">✕</button>
+        <button type="button" class="lightbox-arrow lightbox-prev" aria-label="Ảnh trước">‹</button>
+        <div class="lightbox-stage">
+            <div class="lightbox-counter"></div>
+            <img class="lightbox-main" src="" alt="Ảnh sản phẩm">
+            <div class="lightbox-thumbs"></div>
+        </div>
+        <button type="button" class="lightbox-arrow lightbox-next" aria-label="Ảnh sau">›</button>
+        <aside class="lightbox-panel"></aside>
+    `;
+    document.body.appendChild(lb);
+
+    // Clicking the empty black backdrop closes the lightbox
+    lb.addEventListener('click', (e) => { if (e.target === lb) closeLightbox(); });
+    lb.querySelector('.lightbox-close').addEventListener('click', (e) => { e.stopPropagation(); closeLightbox(); });
+    lb.querySelector('.lightbox-prev').addEventListener('click', (e) => { e.stopPropagation(); lightboxStep(-1); });
+    lb.querySelector('.lightbox-next').addEventListener('click', (e) => { e.stopPropagation(); lightboxStep(1); });
+    // Clicking the empty (black) area inside the stage also closes
+    lb.querySelector('.lightbox-stage').addEventListener('click', (e) => {
+        if (e.target.classList.contains('lightbox-stage')) closeLightbox();
+    });
+    lb.querySelector('.lightbox-main').addEventListener('click', (e) => e.stopPropagation());
+    lb.querySelector('.lightbox-panel').addEventListener('click', (e) => e.stopPropagation());
+
+    document.addEventListener('keydown', (e) => {
+        const overlay = document.getElementById('imageLightbox');
+        if (!overlay || !overlay.classList.contains('visible')) return;
+        if (e.key === 'Escape') closeLightbox();
+        else if (e.key === 'ArrowLeft') lightboxStep(-1);
+        else if (e.key === 'ArrowRight') lightboxStep(1);
+    });
+}
+
+function openLightbox(images, index, product) {
+    if (!Array.isArray(images) || images.length === 0) return;
+    ensureLightbox();
+    lightboxState = {
+        images: images,
+        index: Math.max(0, Math.min(index || 0, images.length - 1)),
+        product: product || null
+    };
+    renderLightbox();
+    const lb = document.getElementById('imageLightbox');
+    lb.classList.add('visible');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+    const lb = document.getElementById('imageLightbox');
+    if (lb) lb.classList.remove('visible');
+    document.body.style.overflow = '';
+}
+
+function lightboxStep(delta) {
+    const n = lightboxState.images.length;
+    if (!n) return;
+    lightboxState.index = (lightboxState.index + delta + n) % n;
+    renderLightbox();
+}
+
+function renderLightbox() {
+    const lb = document.getElementById('imageLightbox');
+    if (!lb) return;
+    const { images, index, product } = lightboxState;
+    const mainImg = lb.querySelector('.lightbox-main');
+    mainImg.src = images[index];
+    mainImg.onerror = function () { this.onerror = null; this.src = '../Img/qc1.jpg'; };
+    lb.querySelector('.lightbox-counter').textContent = `${index + 1} / ${images.length}`;
+
+    const multi = images.length > 1;
+    lb.querySelector('.lightbox-prev').style.display = multi ? '' : 'none';
+    lb.querySelector('.lightbox-next').style.display = multi ? '' : 'none';
+
+    const thumbs = lb.querySelector('.lightbox-thumbs');
+    thumbs.innerHTML = images.map((src, i) => `
+        <button type="button" class="lightbox-thumb ${i === index ? 'active' : ''}" data-i="${i}" style="background-image:url('${escapeHtml(src)}')"></button>
+    `).join('');
+    thumbs.querySelectorAll('.lightbox-thumb').forEach((t) => {
+        t.addEventListener('click', (e) => {
+            e.stopPropagation();
+            lightboxState.index = Number(t.dataset.i);
+            renderLightbox();
+        });
+    });
+
+    lb.querySelector('.lightbox-panel').innerHTML = buildLightboxPanel(product);
+    wireLightboxPanel(lb, product);
+}
+
+function buildLightboxPanel(product) {
+    if (!product) return '';
+    const title = product.subject || product.body || product.title || product.name || 'Sản phẩm';
+    const price = product.price_string || (product.price ? formatPrice(product.price) : 'Liên hệ');
+    const sellerName = product.account_name || product.full_name || (product.seller_info && product.seller_info.full_name) || 'Người bán';
+    const location = [product.ward_name, product.area_name, product.region_name].filter(Boolean).join(', ') || product.location || '';
+    const liveAds = (product.seller_info && product.seller_info.live_ads) || product.sellerAds || '';
+    const initial = (sellerName.trim().charAt(0) || 'N').toUpperCase();
+    return `
+        <div class="lb-seller">
+            <div class="lb-seller-avatar">${escapeHtml(initial)}</div>
+            <div class="lb-seller-meta">
+                <div class="lb-seller-name">${escapeHtml(sellerName)}</div>
+                <div class="lb-seller-sub">${liveAds ? escapeHtml(String(liveAds)) + ' tin đăng' : 'Đang hoạt động'}</div>
+            </div>
+        </div>
+        <h3 class="lb-title">${escapeHtml(title)}</h3>
+        <div class="lb-price">${escapeHtml(price)}</div>
+        ${location ? `<div class="lb-location">📍 ${escapeHtml(location)}</div>` : ''}
+        <div class="lb-actions">
+            <button type="button" class="lb-btn lb-btn-phone" id="lbPhoneBtn">📞 Hiện số</button>
+            <button type="button" class="lb-btn lb-btn-chat" id="lbChatBtn">💬 Chat</button>
+        </div>
+        <div class="lb-phone-result" id="lbPhoneResult"></div>
+        <div class="lb-hint">Bấm vào vùng nền đen để đóng và quay lại trang sản phẩm.</div>
+    `;
+}
+
+function wireLightboxPanel(lb, product) {
+    const phoneBtn = lb.querySelector('#lbPhoneBtn');
+    const chatBtn = lb.querySelector('#lbChatBtn');
+    const phoneResult = lb.querySelector('#lbPhoneResult');
+    if (phoneBtn && phoneResult) {
+        phoneBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const phone = getProductPhone(product);
+            phoneResult.textContent = phone
+                ? `📱 ${phone}`
+                : 'Người bán chưa công khai số — hãy nhắn qua Chat.';
+            phoneResult.classList.add('visible');
+        });
+    }
+    if (chatBtn) {
+        chatBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            closeLightbox();
+            openChatWidget();
+        });
+    }
 }
 
 function renderRelatedProducts(products, currentId) {
