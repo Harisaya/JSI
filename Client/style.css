@@ -3236,3 +3236,150 @@ button:disabled {
     background: #f1f5f9;
     color: #1e293b;
 }
+
+/* --- Nhật ký hoạt động --- */
+.client-profile-section .activity-log-title {
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 14px;
+}
+
+.client-profile-section .activity-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.client-profile-section .activity-filter-input {
+    flex: 1 1 150px;
+    min-width: 120px;
+    padding: 9px 12px;
+    font-size: 13px;
+    color: #475569;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.client-profile-section .activity-filter-input:focus {
+    border-color: #ffc107;
+    box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.15);
+}
+
+.client-profile-section .activity-btn {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    color: #475569;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.client-profile-section .activity-btn-search {
+    background: #ffc107;
+    border-color: #ffc107;
+    color: #1e293b;
+}
+
+.client-profile-section .activity-btn-search:hover {
+    background: #eab000;
+    border-color: #eab000;
+}
+
+.client-profile-section .activity-btn-clear:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+.client-profile-section .activity-controls-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.client-profile-section .activity-control-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.client-profile-section .activity-control-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    color: #94a3b8;
+}
+
+.client-profile-section .activity-mini-select {
+    padding: 6px 10px;
+    font-size: 13px;
+    color: #475569;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    outline: none;
+    cursor: pointer;
+}
+
+.client-profile-section .activity-table-wrap {
+    overflow-x: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+}
+
+.client-profile-section .activity-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.client-profile-section .activity-table th,
+.client-profile-section .activity-table td {
+    text-align: left;
+    padding: 12px 16px;
+    white-space: nowrap;
+}
+
+.client-profile-section .activity-table thead th {
+    background: #f8fafc;
+    color: #64748b;
+    font-weight: 600;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.client-profile-section .activity-table tbody tr + tr td {
+    border-top: 1px solid #f1f5f9;
+}
+
+.client-profile-section .activity-table tbody tr:hover td {
+    background: #f8fafc;
+}
+
+.client-profile-section .activity-table td {
+    color: #334155;
+}
+
+.client-profile-section .activity-empty-row td {
+    text-align: center;
+    color: #94a3b8;
+    padding: 24px 16px;
+}
+
+.client-profile-section .activity-results-info {
+    margin: 16px 0 0;
+    font-size: 13px;
+    color: #64748b;
+}

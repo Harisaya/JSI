@@ -311,8 +311,61 @@
 
         <div id="nhat-ky" class="profile-tab-panel">
             <div class="info-white-card">
-                <h3 class="card-section-title">Nhật ký hoạt động</h3>
-                <p style="color:#64748b; font-size:14px;">Đang tải dữ liệu từ máy chủ...</p>
+                <h3 class="card-section-title activity-log-title">Nhật ký hoạt động</h3>
+
+                <div class="activity-filter-bar">
+                    <select id="filter-action" class="activity-filter-input">
+                        <option value="">Thao tác</option>
+                        <option value="Create an account">Create an account</option>
+                        <option value="Login">Login</option>
+                        <option value="Logout">Logout</option>
+                        <option value="Change password">Change password</option>
+                        <option value="Update profile">Update profile</option>
+                    </select>
+                    <input type="text" id="filter-ip" class="activity-filter-input" placeholder="Địa chỉ IP">
+                    <input type="date" id="filter-date" class="activity-filter-input activity-filter-date" title="Chọn thời gian cần tìm">
+                    <button type="button" id="activity-search-btn" class="activity-btn activity-btn-search">
+                        <i class="fas fa-search"></i> Tìm kiếm
+                    </button>
+                    <button type="button" id="activity-clear-btn" class="activity-btn activity-btn-clear">
+                        <i class="fas fa-trash"></i> Bộ lọc
+                    </button>
+                </div>
+
+                <div class="activity-controls-bar">
+                    <div class="activity-control-group">
+                        <span class="activity-control-label">SHOW :</span>
+                        <select id="activity-show-select" class="activity-mini-select">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </div>
+                    <div class="activity-control-group">
+                        <span class="activity-control-label">SHORT BY DATE:</span>
+                        <select id="activity-sort-select" class="activity-mini-select">
+                            <option value="all">Tất cả</option>
+                            <option value="newest">Mới nhất</option>
+                            <option value="oldest">Cũ nhất</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="activity-table-wrap">
+                    <table class="activity-table">
+                        <thead>
+                            <tr>
+                                <th>Thời gian</th>
+                                <th>Thao tác</th>
+                                <th>IP</th>
+                            </tr>
+                        </thead>
+                        <tbody id="activity-log-body"></tbody>
+                    </table>
+                </div>
+
+                <p class="activity-results-info" id="activity-results-info">Showing 0 of 0 Results</p>
             </div>
         </div>
         <div id="bien-dong" class="profile-tab-panel">
