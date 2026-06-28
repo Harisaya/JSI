@@ -3468,3 +3468,247 @@ button:disabled {
         grid-template-columns: 1fr;
     }
 }
+/* ==================== PRODUCT IMAGE LIGHTBOX ==================== */
+.zoomable-image {
+    cursor: zoom-in;
+    transition: filter 0.15s ease;
+}
+.zoomable-image:hover {
+    filter: brightness(0.94);
+}
+.detail-phone-result {
+    margin: 6px 0 4px;
+    font-weight: 600;
+    color: #b8860b;
+    display: none;
+}
+.detail-phone-result.visible {
+    display: block;
+}
+
+.lightbox-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 4000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding: 32px 24px;
+    background: rgba(0, 0, 0, 0.92);
+}
+.lightbox-overlay.visible {
+    display: flex;
+}
+.lightbox-close {
+    position: absolute;
+    top: 18px;
+    right: 22px;
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    font-size: 22px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+.lightbox-close:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+.lightbox-arrow {
+    flex: 0 0 auto;
+    width: 52px;
+    height: 52px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    font-size: 34px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+.lightbox-arrow:hover {
+    background: rgba(255, 215, 0, 0.85);
+    color: #1a1a1a;
+}
+.lightbox-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    max-width: 62vw;
+    flex: 1 1 auto;
+}
+.lightbox-counter {
+    color: #fff;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+}
+.lightbox-main {
+    max-width: 100%;
+    max-height: 72vh;
+    object-fit: contain;
+    border-radius: 6px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    background: #111;
+}
+.lightbox-thumbs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 100%;
+    max-height: 84px;
+    overflow-x: auto;
+    padding: 2px;
+}
+.lightbox-thumb {
+    width: 60px;
+    height: 46px;
+    border: 2px solid transparent;
+    border-radius: 5px;
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s ease, border-color 0.2s ease;
+    flex: 0 0 auto;
+}
+.lightbox-thumb:hover {
+    opacity: 1;
+}
+.lightbox-thumb.active {
+    opacity: 1;
+    border-color: #ffd700;
+}
+.lightbox-panel {
+    flex: 0 0 320px;
+    width: 320px;
+    max-height: 84vh;
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+.lb-seller {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #f0e6c0;
+    margin-bottom: 14px;
+}
+.lb-seller-avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ffd700, #f2b705);
+    color: #5a4500;
+    font-weight: 700;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.lb-seller-name {
+    font-weight: 700;
+    color: #1a1a1a;
+}
+.lb-seller-sub {
+    font-size: 13px;
+    color: #16a34a;
+}
+.lb-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0 0 8px;
+    line-height: 1.4;
+}
+.lb-price {
+    font-size: 22px;
+    font-weight: 800;
+    color: #d70018;
+    margin-bottom: 8px;
+}
+.lb-location {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 16px;
+}
+.lb-actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+.lb-btn {
+    flex: 1;
+    padding: 11px 12px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: filter 0.2s ease;
+}
+.lb-btn:hover {
+    filter: brightness(0.95);
+}
+.lb-btn-phone {
+    background: #fff4d1;
+    color: #8a6d00;
+    border: 1px solid #f2d57e;
+}
+.lb-btn-chat {
+    background: linear-gradient(135deg, #ffd700, #f2b705);
+    color: #1a1a1a;
+}
+.lb-phone-result {
+    display: none;
+    font-weight: 700;
+    color: #b8860b;
+    background: #fff9e6;
+    border: 1px dashed #f2d57e;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+}
+.lb-phone-result.visible {
+    display: block;
+}
+.lb-hint {
+    font-size: 12px;
+    color: #999;
+    text-align: center;
+}
+
+@media (max-width: 900px) {
+    .lightbox-overlay {
+        flex-direction: column;
+        padding: 16px 10px;
+        overflow-y: auto;
+    }
+    .lightbox-arrow {
+        width: 40px;
+        height: 40px;
+        font-size: 26px;
+    }
+    .lightbox-stage {
+        max-width: 100%;
+        order: 1;
+    }
+    .lightbox-main {
+        max-height: 50vh;
+    }
+    .lightbox-panel {
+        flex: 1 1 auto;
+        width: 100%;
+        max-width: 420px;
+        order: 2;
+    }
+}
