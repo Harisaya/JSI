@@ -551,3 +551,126 @@ function initActivityLog() {
 }
 
 document.addEventListener("DOMContentLoaded", initActivityLog);
+
+// --- BIẾN ĐỘNG SỐ DƯ ---
+function getBalanceHistory() {
+    try {
+        const stored = JSON.parse(localStorage.getItem("balanceHistory"));
+        if (Array.isArray(stored) && stored.length) return stored;
+    } catch (e) {
+        // Bỏ qua dữ liệu hỏng, dùng dữ liệu mẫu bên dưới
+    }
+    return [
+        { time: "2026-06-24 11:50:00", before: 0, change: 100000, after: 100000, reason: "Nạp tiền vào ví" },
+        { time: "2026-06-25 14:20:11", before: 100000, change: -45000, after: 55000, reason: "Thanh toán đơn hàng #1024" },
+        { time: "2026-06-26 09:05:42", before: 55000, change: 200000, after: 255000, reason: "Nạp tiền vào ví" },
+        { time: "2026-06-26 19:30:08", before: 255000, change: -120000, after: 135000, reason: "Thanh toán đơn hàng #1031" },
+        { time: "2026-06-27 08:15:33", before: 135000, change: 50000, after: 185000, reason: "Hoàn tiền đơn hàng #1031" }
+    ];
+}
+
+function formatMoney(value) {
+    const num = Number(value) || 0;
+    const sign = num > 0 ? "+" : "";
+    return `${sign}${num.toLocaleString("vi-VN")}đ`;
+}
+
+function initBalanceHistory() {
+    const tbody = document.getElementById("balance-log-body");
+    if (!tbody) return;
+
+    const reasonInput = document.getElementById("balance-filter-reason");
+    const dateInput = document.getElementById("balance-filter-date");
+    const searchBtn = document.getElementById("balance-search-btn");
+    const clearBtn = document.getElementById("balance-clear-btn");
+    const showSelect = document.getElementById("balance-show-select");
+    const sortSelect = document.getElementById("balance-sort-select");
+    const resultsInfo = document.getElementById("balance-results-info");
+
+    const allRows = getBalanceHistory();
+
+    function render() {
+        const reason = reasonInput.value.trim().toLowerCase();
+        const date = dateInput.value;
+        const sort = sortSelect.value;
+        const limit = parseInt(showSelect.value, 10) || 10;
+
+        let rows = allRows.filter((row) => {
+            if (reason && !String(row.reason).toLowerCase().includes(reason)) return false;
+            if (date && !String(row.time).startsWith(date)) return false;
+            return true;
+        });
+
+        if (sort === "newest") {
+            rows = rows.slice().sort((a, b) => b.time.localeCompare(a.time));
+        } else if (sort === "oldest") {
+            rows = rows.slice().sort((a, b) => a.time.localeCompare(b.time));
+        }
+
+        const total = rows.length;
+        const visible = rows.slice(0, limit);
+
+        tbody.innerHTML = "";
+        if (!visible.length) {
+            const tr = document.createElement("tr");
+            tr.className = "activity-empty-row";
+            const td = document.createElement("td");
+            td.colSpan = 5;
+            td.innerHTML = '<i class="fas fa-inbox" style="display:block;font-size:32px;color:#cbd5e1;margin-bottom:8px;"></i>Không có dữ liệu';
+            tr.appendChild(td);
+            tbody.appendChild(tr);
+        } else {
+            visible.forEach((row) => {
+                const tr = document.createElement("tr");
+
+                const timeTd = document.createElement("td");
+                timeTd.textContent = row.time;
+
+                const beforeTd = document.createElement("td");
+                beforeTd.textContent = (Number(row.before) || 0).toLocaleString("vi-VN") + "đ";
+
+                const changeTd = document.createElement("td");
+                changeTd.textContent = formatMoney(row.change);
+                changeTd.style.color = (Number(row.change) || 0) >= 0 ? "#16a34a" : "#dc2626";
+                changeTd.style.fontWeight = "600";
+
+                const afterTd = document.createElement("td");
+                afterTd.textContent = (Number(row.after) || 0).toLocaleString("vi-VN") + "đ";
+
+                const reasonTd = document.createElement("td");
+                reasonTd.textContent = row.reason;
+
+                tr.appendChild(timeTd);
+                tr.appendChild(beforeTd);
+                tr.appendChild(changeTd);
+                tr.appendChild(afterTd);
+                tr.appendChild(reasonTd);
+                tbody.appendChild(tr);
+            });
+        }
+
+        resultsInfo.textContent = `Showing ${visible.length} of ${total} Results`;
+    }
+
+    if (searchBtn) searchBtn.addEventListener("click", render);
+    if (clearBtn) {
+        clearBtn.addEventListener("click", () => {
+            reasonInput.value = "";
+            dateInput.value = "";
+            sortSelect.value = "all";
+            showSelect.value = "10";
+            render();
+        });
+    }
+    if (showSelect) showSelect.addEventListener("change", render);
+    if (sortSelect) sortSelect.addEventListener("change", render);
+    if (reasonInput) {
+        reasonInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") render();
+        });
+    }
+
+    render();
+}
+
+document.addEventListener("DOMContentLoaded", initBalanceHistory);

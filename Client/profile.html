@@ -370,14 +370,80 @@
         </div>
         <div id="bien-dong" class="profile-tab-panel">
             <div class="info-white-card">
-                <h3 class="card-section-title">Biến động số dư</h3>
-                <p style="color:#64748b; font-size:14px;">Không có dữ liệu biến động.</p>
+                <h3 class="card-section-title activity-log-title">Biến động số dư</h3>
+
+                <div class="activity-filter-bar">
+                    <input type="text" id="balance-filter-reason" class="activity-filter-input" placeholder="Lý do">
+                    <input type="date" id="balance-filter-date" class="activity-filter-input activity-filter-date" title="Chọn thời gian cần tìm">
+                    <button type="button" id="balance-search-btn" class="activity-btn activity-btn-search">
+                        <i class="fas fa-search"></i> Tìm kiếm
+                    </button>
+                    <button type="button" id="balance-clear-btn" class="activity-btn activity-btn-clear">
+                        <i class="fas fa-trash"></i> Bộ lọc
+                    </button>
+                </div>
+
+                <div class="activity-controls-bar">
+                    <div class="activity-control-group">
+                        <span class="activity-control-label">SHOW :</span>
+                        <select id="balance-show-select" class="activity-mini-select">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </div>
+                    <div class="activity-control-group">
+                        <span class="activity-control-label">SHORT BY DATE:</span>
+                        <select id="balance-sort-select" class="activity-mini-select">
+                            <option value="all">Tất cả</option>
+                            <option value="newest">Mới nhất</option>
+                            <option value="oldest">Cũ nhất</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="activity-table-wrap">
+                    <table class="activity-table">
+                        <thead>
+                            <tr>
+                                <th>Thời gian</th>
+                                <th>Số dư ban đầu</th>
+                                <th>Số dư thay đổi</th>
+                                <th>Số dư hiện tại</th>
+                                <th>Lý do</th>
+                            </tr>
+                        </thead>
+                        <tbody id="balance-log-body"></tbody>
+                    </table>
+                </div>
+
+                <p class="activity-results-info" id="balance-results-info">Showing 0 of 0 Results</p>
             </div>
         </div>
         <div id="mat-khau" class="profile-tab-panel">
             <div class="info-white-card">
-                <h3 class="card-section-title">Thay đổi mật khẩu</h3>
-                <p style="color:#64748b; font-size:14px;">Vui lòng điền thông tin mật khẩu mới.</p>
+                <h3 class="card-section-title activity-log-title">Thay đổi mật khẩu</h3>
+                <p class="change-pw-desc">Thay đổi mật khẩu đăng nhập của bạn là một cách dễ dàng để giữ an toàn cho tài khoản của bạn.</p>
+
+                <div id="change-pw-message" class="change-pw-message"></div>
+
+                <div class="change-pw-grid">
+                    <div class="change-pw-field">
+                        <label for="current-password">Mật khẩu hiện tại</label>
+                        <input type="password" id="current-password" autocomplete="current-password" placeholder="••••••••">
+                    </div>
+                    <div class="change-pw-field">
+                        <label for="new-password">Mật khẩu mới</label>
+                        <input type="password" id="new-password" autocomplete="new-password" placeholder="••••••••">
+                    </div>
+                    <div class="change-pw-field">
+                        <label for="confirm-password">Nhập lại mật khẩu mới</label>
+                        <input type="password" id="confirm-password" autocomplete="new-password" placeholder="••••••••">
+                    </div>
+                </div>
+
+                <button type="button" id="change-pw-btn" class="change-pw-submit">CẬP NHẬT</button>
             </div>
         </div>
     </main>
@@ -396,5 +462,6 @@
 </div>
 
     <script src="./profile.js"></script>
+    <script type="module" src="./changePassword.js"></script>
 </body>
 </html>

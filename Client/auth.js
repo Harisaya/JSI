@@ -338,6 +338,13 @@ window.closeAdminModal = closeAdminModal;
 document.addEventListener('DOMContentLoaded', () => {
     // Create matrix effect
     createMatrixEffect();
+
+    // Hiển thị thông báo chuyển tiếp (vd: vừa đổi mật khẩu xong)
+    const authNotice = sessionStorage.getItem('authNotice');
+    if (authNotice) {
+        sessionStorage.removeItem('authNotice');
+        showNotification(authNotice, 'success');
+    }
     
     // Handle login form
     const loginForm = document.getElementById('loginForm');

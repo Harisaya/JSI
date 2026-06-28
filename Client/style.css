@@ -3383,3 +3383,101 @@ button:disabled {
     font-size: 13px;
     color: #64748b;
 }
+
+/* --- Thay đổi mật khẩu --- */
+.client-profile-section .change-pw-desc {
+    margin: 0 0 22px;
+    font-size: 14px;
+    color: #64748b;
+    line-height: 1.5;
+}
+
+.client-profile-section .change-pw-message {
+    display: none;
+    margin-bottom: 18px;
+    padding: 11px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.client-profile-section .change-pw-message.visible {
+    display: block;
+}
+
+.client-profile-section .change-pw-message--error {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+
+.client-profile-section .change-pw-message--success {
+    background: #f0fdf4;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+}
+
+.client-profile-section .change-pw-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 24px;
+}
+
+.client-profile-section .change-pw-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.client-profile-section .change-pw-field label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #475569;
+}
+
+.client-profile-section .change-pw-field input {
+    padding: 11px 14px;
+    font-size: 14px;
+    color: #1e293b;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.client-profile-section .change-pw-field input:focus {
+    background: #ffffff;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+.client-profile-section .change-pw-submit {
+    width: 100%;
+    padding: 13px 16px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: #ffffff;
+    background: #2563eb;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.client-profile-section .change-pw-submit:hover {
+    background: #1d4ed8;
+}
+
+.client-profile-section .change-pw-submit:disabled {
+    background: #93b4f5;
+    cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+    .client-profile-section .change-pw-grid {
+        grid-template-columns: 1fr;
+    }
+}
