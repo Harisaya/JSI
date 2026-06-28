@@ -341,6 +341,39 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    // --- LOGIC HIỂN THỊ POPUP ĐĂNG XUẤT CHUẨN ---
+    const logoutSidebarBtn = document.getElementById("logout-sidebar-btn");
+    const modalLogoutOverlay = document.getElementById("modalLogoutOverlay");
+    const confirmLogoutAction = document.getElementById("confirmLogoutAction");
+    const cancelLogoutAction = document.getElementById("cancelLogoutAction");
+
+    if (logoutSidebarBtn && modalLogoutOverlay) {
+        logoutSidebarBtn.addEventListener("click", () => modalLogoutOverlay.classList.add("visible"));
+    }
+    if (cancelLogoutAction && modalLogoutOverlay) {
+        cancelLogoutAction.addEventListener("click", () => modalLogoutOverlay.classList.remove("visible"));
+    }
+    if (modalLogoutOverlay) {
+        modalLogoutOverlay.addEventListener("click", (e) => {
+            if (e.target === modalLogoutOverlay) modalLogoutOverlay.classList.remove("visible");
+        });
+    }
+    if (confirmLogoutAction) {
+        confirmLogoutAction.addEventListener("click", function () {
+            if (typeof firebase !== "undefined" && firebase.auth) {
+                firebase.auth().signOut().then(() => {
+                    window.location.href = "main.html";
+                });
+            } else {
+                handleLogout();
+            }
+        });
+    }
+
+    if (typeof firebase === "undefined" || !firebase.auth) {
+        return;
+    }
+
     // --- 2. LẤY DỮ LIỆU ĐỘNG TỪ FIREBASE ĐỔ VÀO INPUTS ---
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
@@ -399,26 +432,6 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 gaDrawerArea.classList.remove("expanded");
             }
-        });
-    }
-
-    // --- 4. LOGIC HIỂN THỊ POPUP ĐĂNG XUẤT CHUẨN ---
-    const logoutSidebarBtn = document.getElementById("logout-sidebar-btn");
-    const modalLogoutOverlay = document.getElementById("modalLogoutOverlay");
-    const confirmLogoutAction = document.getElementById("confirmLogoutAction");
-    const cancelLogoutAction = document.getElementById("cancelLogoutAction");
-
-    if (logoutSidebarBtn) {
-        logoutSidebarBtn.addEventListener("click", () => modalLogoutOverlay.classList.add("visible"));
-    }
-    if (cancelLogoutAction) {
-        cancelLogoutAction.addEventListener("click", () => modalLogoutOverlay.classList.remove("visible"));
-    }
-    if (confirmLogoutAction) {
-        confirmLogoutAction.addEventListener("click", function () {
-            firebase.auth().signOut().then(() => {
-                window.location.href = "main.html";
-            });
         });
     }
 });
