@@ -436,3 +436,119 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
+
+// --- NHẬT KÝ HOẠT ĐỘNG ---
+function getActivityLogs() {
+    try {
+        const stored = JSON.parse(localStorage.getItem("activityLogs"));
+        if (Array.isArray(stored) && stored.length) return stored;
+    } catch (e) {
+        // Bỏ qua dữ liệu hỏng, dùng dữ liệu mẫu bên dưới
+    }
+    return [
+        { time: "2026-06-24 11:42:42", action: "Create an account", ip: "203.113.1.92" },
+        { time: "2026-06-24 11:45:10", action: "Login", ip: "203.113.1.92" },
+        { time: "2026-06-25 09:12:05", action: "Update profile", ip: "171.244.2.18" },
+        { time: "2026-06-25 22:30:48", action: "Change password", ip: "171.244.2.18" },
+        { time: "2026-06-26 08:05:33", action: "Login", ip: "118.69.7.220" },
+        { time: "2026-06-27 14:51:09", action: "Logout", ip: "118.69.7.220" }
+    ];
+}
+
+function maskActivityIp(ip) {
+    const parts = String(ip).split(".");
+    if (parts.length === 4) return `***.***.${parts[2]}.${parts[3]}`;
+    return ip;
+}
+
+function initActivityLog() {
+    const tbody = document.getElementById("activity-log-body");
+    if (!tbody) return;
+
+    const actionSelect = document.getElementById("filter-action");
+    const ipInput = document.getElementById("filter-ip");
+    const dateInput = document.getElementById("filter-date");
+    const searchBtn = document.getElementById("activity-search-btn");
+    const clearBtn = document.getElementById("activity-clear-btn");
+    const showSelect = document.getElementById("activity-show-select");
+    const sortSelect = document.getElementById("activity-sort-select");
+    const resultsInfo = document.getElementById("activity-results-info");
+
+    const allLogs = getActivityLogs();
+
+    function render() {
+        const action = actionSelect.value;
+        const ip = ipInput.value.trim().toLowerCase();
+        const date = dateInput.value;
+        const sort = sortSelect.value;
+        const limit = parseInt(showSelect.value, 10) || 10;
+
+        let logs = allLogs.filter((log) => {
+            if (action && log.action !== action) return false;
+            if (ip && !String(log.ip).toLowerCase().includes(ip)) return false;
+            if (date && !String(log.time).startsWith(date)) return false;
+            return true;
+        });
+
+        if (sort === "newest") {
+            logs = logs.slice().sort((a, b) => b.time.localeCompare(a.time));
+        } else if (sort === "oldest") {
+            logs = logs.slice().sort((a, b) => a.time.localeCompare(b.time));
+        }
+
+        const total = logs.length;
+        const visible = logs.slice(0, limit);
+
+        tbody.innerHTML = "";
+        if (!visible.length) {
+            const tr = document.createElement("tr");
+            tr.className = "activity-empty-row";
+            const td = document.createElement("td");
+            td.colSpan = 3;
+            td.textContent = "Không tìm thấy hoạt động nào.";
+            tr.appendChild(td);
+            tbody.appendChild(tr);
+        } else {
+            visible.forEach((log) => {
+                const tr = document.createElement("tr");
+
+                const timeTd = document.createElement("td");
+                timeTd.textContent = log.time;
+                const actionTd = document.createElement("td");
+                actionTd.textContent = log.action;
+                const ipTd = document.createElement("td");
+                ipTd.textContent = maskActivityIp(log.ip);
+
+                tr.appendChild(timeTd);
+                tr.appendChild(actionTd);
+                tr.appendChild(ipTd);
+                tbody.appendChild(tr);
+            });
+        }
+
+        resultsInfo.textContent = `Showing ${visible.length} of ${total} Results`;
+    }
+
+    if (searchBtn) searchBtn.addEventListener("click", render);
+    if (clearBtn) {
+        clearBtn.addEventListener("click", () => {
+            actionSelect.value = "";
+            ipInput.value = "";
+            dateInput.value = "";
+            sortSelect.value = "all";
+            showSelect.value = "10";
+            render();
+        });
+    }
+    if (showSelect) showSelect.addEventListener("change", render);
+    if (sortSelect) sortSelect.addEventListener("change", render);
+    if (ipInput) {
+        ipInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") render();
+        });
+    }
+
+    render();
+}
+
+document.addEventListener("DOMContentLoaded", initActivityLog);
