@@ -3137,3 +3137,102 @@ button:disabled {
 #user-menu * {
     box-sizing: border-box;
 }
+
+/* --- Popup xác nhận đăng xuất --- */
+.logout-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 23, 42, 0.45);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    z-index: 1000;
+}
+
+.logout-modal-backdrop.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.logout-modal-dialog {
+    width: 90%;
+    max-width: 380px;
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 28px 24px;
+    text-align: center;
+    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.25);
+    transform: translateY(12px) scale(0.96);
+    transition: transform 0.2s ease;
+}
+
+.logout-modal-backdrop.visible .logout-modal-dialog {
+    transform: translateY(0) scale(1);
+}
+
+.exclamation-icon-circle {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    background: #fef2f2;
+    color: #ef4444;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 56px;
+}
+
+.modal-dialog-title {
+    margin: 0 0 8px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.modal-dialog-desc {
+    margin: 0 0 24px;
+    font-size: 14px;
+    color: #64748b;
+    line-height: 1.5;
+}
+
+.modal-buttons-flex {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.btn-modal-yes,
+.btn-modal-no {
+    flex: 1;
+    padding: 11px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-modal-yes {
+    border: none;
+    background: #ef4444;
+    color: #ffffff;
+}
+
+.btn-modal-yes:hover {
+    background: #dc2626;
+}
+
+.btn-modal-no {
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    color: #475569;
+}
+
+.btn-modal-no:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+}
