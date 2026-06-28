@@ -3481,3 +3481,589 @@ button:disabled {
         grid-template-columns: 1fr;
     }
 }
+/* =========================================================
+   YELLOW THEME OVERRIDES (đồng bộ màu chủ đạo vàng cho toàn web)
+   ========================================================= */
+.btn.btn-primary,
+.btn-primary.btn,
+.btn-info.btn,
+.btn.btn-info {
+    background: linear-gradient(135deg, var(--accent-strong) 0%, var(--accent) 100%) !important;
+    border-color: var(--accent) !important;
+    color: #1f1706 !important;
+}
+.btn.btn-primary:hover,
+.btn-primary.btn:hover,
+.btn.btn-info:hover {
+    background: #f4c430 !important;
+    color: #1f1706 !important;
+}
+.bg-primary,
+.bg-info {
+    background-color: var(--accent) !important;
+    color: #1f1706 !important;
+}
+.text-primary {
+    color: #b8860b !important;
+}
+.btn-outline-primary {
+    color: #a07800 !important;
+    border-color: var(--accent) !important;
+}
+.btn-outline-primary:hover {
+    background-color: var(--accent) !important;
+    color: #1f1706 !important;
+}
+.list-group-item-action:focus,
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25) !important;
+}
+
+/* =========================================================
+   SELL PAGE (sell.html) — giao diện rộng, màu vàng
+   ========================================================= */
+.sell-body {
+    background: #fffdf4;
+    font-family: 'Courier New', monospace;
+    color: var(--text);
+    margin: 0;
+}
+.sell-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.sell-header {
+    background: linear-gradient(135deg, var(--accent-strong) 0%, var(--accent) 100%);
+    box-shadow: 0 4px 16px rgba(184, 134, 11, 0.18);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+.sell-header-wrapper {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+.sell-logo {
+    font-size: 22px;
+    font-weight: 800;
+    color: #1f1706;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+}
+.sell-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.sell-nav-link,
+.sell-nav-btn {
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+    font-size: 14px;
+    color: #1f1706;
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(31, 23, 6, 0.12);
+    border-radius: 10px;
+    padding: 9px 14px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.sell-nav-link:hover,
+.sell-nav-btn:hover {
+    background: #ffffff;
+    transform: translateY(-1px);
+}
+.sell-nav-logout {
+    color: #b91c1c;
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.sell-main {
+    width: 100%;
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    flex: 1;
+}
+.sell-hero {
+    background: linear-gradient(135deg, #fff7d6 0%, #ffffff 100%);
+    border: 1px solid #ffe79a;
+    border-radius: 18px;
+    padding: 26px 30px;
+    margin-bottom: 24px;
+    box-shadow: 0 8px 24px rgba(184, 134, 11, 0.08);
+}
+.sell-hero h1 {
+    margin: 0 0 8px;
+    font-size: 28px;
+    color: #1f1706;
+}
+.sell-hero p {
+    margin: 0;
+    color: #6b5d2f;
+    font-size: 15px;
+    line-height: 1.55;
+}
+
+.sell-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+}
+
+.sell-card {
+    background: #ffffff;
+    border: 1px solid #f0e4b8;
+    border-radius: 18px;
+    padding: 26px 28px;
+    box-shadow: 0 10px 30px rgba(184, 134, 11, 0.07);
+}
+.sell-card-title {
+    margin: 0 0 20px;
+    font-size: 19px;
+    color: #1f1706;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #ffe79a;
+}
+
+.sell-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+.sell-field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+.sell-field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+.sell-field label {
+    font-weight: 700;
+    font-size: 14px;
+    color: #3a3119;
+}
+.sell-field .req {
+    color: #e11d48;
+}
+.sell-field input,
+.sell-field select,
+.sell-field textarea {
+    font-family: 'Courier New', monospace;
+    font-size: 15px;
+    color: var(--text);
+    background: #fffdf6;
+    border: 1.5px solid #ecdfa8;
+    border-radius: 12px;
+    padding: 12px 14px;
+    transition: 0.2s;
+    width: 100%;
+}
+.sell-field input:focus,
+.sell-field select:focus,
+.sell-field textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.18);
+}
+.sell-field textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+.sell-hint {
+    color: #9a8a52;
+    font-size: 12.5px;
+}
+.sell-price-group {
+    display: flex;
+    align-items: stretch;
+    border: 1.5px solid #ecdfa8;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fffdf6;
+}
+.sell-price-group:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.18);
+}
+.sell-price-group input {
+    border: none;
+    border-radius: 0;
+    box-shadow: none !important;
+    background: transparent;
+}
+.sell-price-group input:focus {
+    box-shadow: none;
+}
+.sell-price-suffix {
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    background: #fff2bf;
+    color: #6b5d2f;
+    font-weight: 700;
+}
+
+.sell-selected-ads {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    background: #fff8df;
+    border: 1px dashed #e9cf6a;
+    border-radius: 12px;
+    padding: 12px 16px;
+}
+.sell-ads-label {
+    font-weight: 700;
+    color: #6b5d2f;
+}
+.sell-ads-value {
+    font-weight: 800;
+    color: #1f1706;
+}
+.sell-ads-change {
+    margin-left: auto;
+    background: transparent;
+    border: none;
+    color: #b8860b;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: underline;
+    font-family: 'Courier New', monospace;
+}
+
+.sell-form-message {
+    display: none;
+}
+.sell-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+}
+.sell-btn {
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+    font-size: 15px;
+    border-radius: 12px;
+    padding: 12px 22px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: 0.2s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.sell-btn-primary {
+    background: linear-gradient(135deg, var(--accent-strong) 0%, var(--accent) 100%);
+    color: #1f1706;
+    border-color: var(--accent);
+}
+.sell-btn-primary:hover {
+    background: #f4c430;
+    transform: translateY(-1px);
+}
+.sell-btn-primary:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+}
+.sell-btn-ghost {
+    background: #fff;
+    color: #8a6d0b;
+    border-color: var(--accent);
+}
+.sell-btn-ghost:hover {
+    background: #fff7d6;
+}
+.sell-btn-cancel {
+    background: #f4f1e6;
+    color: #6b5d2f;
+    border-color: #e4dcc0;
+}
+.sell-btn-cancel:hover {
+    background: #eae5cf;
+}
+.sell-btn-soft {
+    background: #fff7d6;
+    color: #8a6d0b;
+    border-color: #f0df9c;
+    padding: 8px 14px;
+    font-size: 13.5px;
+    width: 100%;
+    margin-top: 10px;
+}
+.sell-btn-soft:hover {
+    background: var(--accent);
+    color: #1f1706;
+}
+
+/* Sidebar / preview */
+.sell-side-card {
+    position: sticky;
+    top: 92px;
+}
+.sell-preview {
+    border: 1.5px dashed #e9cf6a;
+    border-radius: 14px;
+    background: #fffdf6;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 14px;
+}
+.sell-preview-placeholder {
+    color: #b3a05c;
+    font-size: 14px;
+    padding: 20px;
+    text-align: center;
+}
+.sell-preview-img {
+    width: 100%;
+    max-height: 260px;
+    object-fit: cover;
+}
+.sell-preview-info {
+    margin-bottom: 18px;
+}
+.sell-preview-name {
+    font-weight: 800;
+    color: #1f1706;
+    font-size: 16px;
+    margin-bottom: 4px;
+    word-break: break-word;
+}
+.sell-preview-price {
+    color: #d97706;
+    font-weight: 800;
+    font-size: 18px;
+}
+.sell-tips {
+    background: #fff8df;
+    border-radius: 12px;
+    padding: 16px 18px;
+}
+.sell-tips h3 {
+    margin: 0 0 10px;
+    font-size: 15px;
+    color: #1f1706;
+}
+.sell-tips ul {
+    margin: 0;
+    padding-left: 18px;
+    color: #6b5d2f;
+    font-size: 13.5px;
+    line-height: 1.7;
+}
+
+/* Custom modals (Tiện ích, Quảng cáo) */
+.sell-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(31, 23, 6, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    z-index: 1000;
+}
+.sell-modal-overlay.visible {
+    opacity: 1;
+    visibility: visible;
+}
+.sell-modal {
+    width: 100%;
+    max-width: 600px;
+    background: #ffffff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(31, 23, 6, 0.3);
+    transform: translateY(14px) scale(0.97);
+    transition: transform 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+}
+.sell-modal-overlay.visible .sell-modal {
+    transform: translateY(0) scale(1);
+}
+.sell-modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 22px;
+    color: #1f1706;
+}
+.sell-modal-head-utility {
+    background: linear-gradient(135deg, var(--accent-strong) 0%, var(--accent) 100%);
+}
+.sell-modal-head-ads {
+    background: linear-gradient(135deg, #ffe79a 0%, var(--accent) 100%);
+}
+.sell-modal-head h5 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 800;
+}
+.sell-modal-close {
+    background: transparent;
+    border: none;
+    font-size: 26px;
+    line-height: 1;
+    color: #1f1706;
+    cursor: pointer;
+}
+.sell-modal-body {
+    padding: 20px 22px;
+    overflow-y: auto;
+}
+.sell-modal-desc {
+    color: #6b5d2f;
+    margin: 0 0 16px;
+}
+.sell-modal-foot {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 14px 22px;
+    border-top: 1px solid #f0e4b8;
+}
+.sell-utility-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+.sell-utility-item {
+    border: 1px solid #f0e4b8;
+    border-radius: 12px;
+    padding: 14px;
+    background: #fffdf6;
+    text-align: center;
+}
+.sell-utility-item h6 {
+    margin: 0 0 6px;
+    font-size: 14.5px;
+    color: #1f1706;
+}
+.sell-utility-item small {
+    color: #9a8a52;
+    font-size: 12.5px;
+}
+
+.sell-ads-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.sell-ads-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1.5px solid #f0e4b8;
+    border-radius: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.sell-ads-option:hover {
+    border-color: var(--accent);
+    background: #fffdf6;
+}
+.sell-ads-option input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent);
+}
+.sell-ads-text {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+.sell-ads-text strong {
+    color: #1f1706;
+    font-size: 14.5px;
+}
+.sell-ads-text small {
+    color: #9a8a52;
+    font-size: 12.5px;
+}
+.sell-ads-price {
+    font-weight: 800;
+    color: #d97706;
+    white-space: nowrap;
+}
+
+/* Toast */
+.sell-toast {
+    position: fixed;
+    bottom: 26px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #1f1706;
+    color: #fff;
+    padding: 13px 22px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 14px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
+    z-index: 1100;
+    max-width: 90vw;
+    text-align: center;
+}
+.sell-toast.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+.sell-toast--success {
+    background: #15803d;
+}
+.sell-toast--error {
+    background: #b91c1c;
+}
+.sell-toast--info {
+    background: #1f1706;
+}
+
+@media (max-width: 900px) {
+    .sell-layout {
+        grid-template-columns: 1fr;
+    }
+    .sell-side-card {
+        position: static;
+    }
+    .sell-field-row {
+        grid-template-columns: 1fr;
+    }
+    .sell-utility-grid {
+        grid-template-columns: 1fr;
+    }
+}
