@@ -2,7 +2,7 @@ function getQueryParam(name) {
     const url = new URL(window.location.href);
     return url.searchParams.get(name);
 }
-
+ 
 function getCachedProductById(productId) {
     try {
         const cached = sessionStorage.getItem('chototProducts');
@@ -19,7 +19,7 @@ function getCachedProductById(productId) {
         return null;
     }
 }
-
+ 
 function getCachedProducts() {
     try {
         const cached = sessionStorage.getItem('chototProducts');
@@ -32,20 +32,20 @@ function getCachedProducts() {
         return [];
     }
 }
-
+ 
 function formatPrice(value) {
     if (value == null) return 'Liên hệ';
     if (typeof value === 'string' && value.trim()) return value;
     return value.toLocaleString('vi-VN') + ' đ';
 }
-
+ 
 function formatDate(timestamp) {
     if (!timestamp) return '-';
     const date = new Date(Number(timestamp));
     if (Number.isNaN(date.getTime())) return timestamp;
     return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
 }
-
+ 
 function getShiftedTimestamp(productId, originalTimestamp) {
     let baseTime = Number(originalTimestamp);
     if (!baseTime || isNaN(baseTime)) {
@@ -53,7 +53,7 @@ function getShiftedTimestamp(productId, originalTimestamp) {
     } else if (baseTime < 1000000000000) {
         baseTime = baseTime * 1000;
     }
-
+ 
     let seed;
     if (!productId) {
         seed = Math.random();
@@ -65,7 +65,7 @@ function getShiftedTimestamp(productId, originalTimestamp) {
         }
         seed = (Math.abs(hash) % 1000) / 1000;
     }
-
+ 
     let offsetMs = 0;
     if (seed < 0.2) {
         // 20% within 1-24 hours
@@ -89,10 +89,10 @@ function getShiftedTimestamp(productId, originalTimestamp) {
         const days = minDays + ((seed - 0.8) / 0.2) * (maxDays - minDays);
         offsetMs = Math.floor(days * 24 * 60 * 60 * 1000);
     }
-
+ 
     return baseTime - offsetMs;
 }
-
+ 
 function formatRelativeTime(timestamp) {
     if (!timestamp) return 'Mới đăng';
     
@@ -134,7 +134,7 @@ function formatRelativeTime(timestamp) {
     const years = Math.floor(diffMonths / 12);
     return `${years} năm trước`;
 }
-
+ 
 function escapeHtml(str) {
     if (!str) return '';
     return String(str)
@@ -143,15 +143,15 @@ function escapeHtml(str) {
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;');
 }
-
+ 
 // Để chuỗi rỗng để dùng đường dẫn tương đối – hoạt động đúng trên Vercel
 const API_PROXY_SERVER = '';
-
+ 
 async function fetchChototApi(path) {
     const localUrl = path;
     const serverUrl = `${API_PROXY_SERVER}${path}`;
     const localProxyAvailable = sessionStorage.getItem('chototLocalProxyAvailable');
-
+ 
     if (location.port === '3000') {
         try {
             const localResp = await fetch(localUrl, { headers: { 'Accept': 'application/json' } });
@@ -160,7 +160,7 @@ async function fetchChototApi(path) {
             console.warn('Local API fetch failed:', err.message);
         }
     }
-
+ 
     if (localProxyAvailable !== 'false') {
         try {
             const serverResp = await fetch(serverUrl, { headers: { 'Accept': 'application/json' } });
@@ -174,13 +174,13 @@ async function fetchChototApi(path) {
     } else {
         console.log('Skipping local proxy because it was unavailable earlier');
     }
-
+ 
     const gatewayUrl = `https://gateway.chotot.com/v1/public/ad-listing?${path.split('?')[1] || ''}`;
     const fallbackProxies = [
         'https://corsproxy.io/?' + encodeURIComponent(gatewayUrl),
         'https://thingproxy.freeboard.io/fetch/' + encodeURIComponent(gatewayUrl)
     ];
-
+ 
     for (const proxyUrl of fallbackProxies) {
         try {
             const resp = await fetch(proxyUrl, { headers: { 'Accept': 'application/json' } });
@@ -202,10 +202,10 @@ async function fetchChototApi(path) {
             console.warn('Fallback proxy failed:', proxyUrl, err.message);
         }
     }
-
+ 
     throw new Error(`Không thể kết nối đến proxy server tại ${API_PROXY_SERVER}`);
 }
-
+ 
 function getImageUrls(product) {
     const urls = new Set();
     if (Array.isArray(product.images)) {
@@ -224,7 +224,7 @@ function getImageUrls(product) {
     });
     return Array.from(urls).filter(Boolean);
 }
-
+ 
 async function fetchProductDetail(id) {
     const resp = await fetchChototApi(`/api/chotot?adId=${encodeURIComponent(id)}`);
     if (!resp.ok) {
@@ -252,22 +252,22 @@ async function fetchProductDetail(id) {
     });
     return product;
 }
-
+ 
 function buildImageGallery(images, title) {
     if (!Array.isArray(images) || images.length === 0) {
         return `<div class="product-image-fallback">Không có ảnh</div>`;
     }
-
+ 
     const items = images.map((src, index) => `
         <div class="carousel-item ${index === 0 ? 'active' : ''}">
             <img src="${escapeHtml(src)}" class="d-block w-100" alt="${escapeHtml(title)}" onerror="this.onerror=null;this.src='../Img/qc1.jpg'">
         </div>
     `).join('');
-
+ 
     const indicators = images.map((src, index) => `
         <button type="button" data-bs-target="#productImageCarousel" data-bs-slide-to="${index}" ${index === 0 ? 'class="active" aria-current="true"' : ''} aria-label="Ảnh ${index + 1}" style="background-image:url('${escapeHtml(src)}')"></button>
     `).join('');
-
+ 
     return `
         <div id="productImageCarousel" class="carousel slide product-image-carousel" data-bs-ride="carousel">
             <div class="carousel-indicators">
@@ -287,11 +287,11 @@ function buildImageGallery(images, title) {
         </div>
     `;
 }
-
+ 
 function renderProductDetail(product) {
     const root = document.getElementById('productDetailRoot');
     if (!root) return;
-
+ 
     // Get the actual timestamp field - try multiple field names
     const timestamp = product.list_time || product.post_date || product.createdTime || product.createTime || product.published_time || product.listTime;
     const productId = product.ad_id || product.id;
@@ -304,7 +304,7 @@ function renderProductDetail(product) {
     const location = [product.ward_name, product.area_name, product.region_name].filter(Boolean).join(', ');
     const sellerName = product.account_name || product.full_name || (product.seller_info && product.seller_info.full_name) || 'Người bán';
     const sellerAds = product.seller_info && product.seller_info.live_ads ? product.seller_info.live_ads : '---';
-
+ 
     const detailRows = [
         { label: 'Danh mục', value: product.category_name || '-' },
         { label: 'Khu vực', value: location || product.location || '-' },
@@ -317,18 +317,18 @@ function renderProductDetail(product) {
         { label: 'Loại nhà', value: product.house_type || '-' },
         { label: 'Giá', value: price }
     ];
-
+ 
     const infoRowHtml = detailRows.map(item => `
         <div class="detail-row">
             <span class="detail-label">${escapeHtml(item.label)}</span>
             <span class="detail-value">${escapeHtml(String(item.value))}</span>
         </div>
     `).join('');
-
+ 
     const description = escapeHtml(product.body || product.subject || 'Không có mô tả chi tiết.').replace(/\n/g, '<br>');
-
+ 
     const sellerAvatar = product.avatar || (product.seller_info && product.seller_info.avatar) || '';
-
+ 
     root.innerHTML = `
         <section class="product-detail-top">
             <div class="product-detail-grid">
@@ -349,9 +349,10 @@ function renderProductDetail(product) {
                         <div><span>🕒</span> ${escapeHtml(formatRelativeTime(timestamp))}</div>
                     </div>
                     <div class="product-actions-row">
-                        <button class="btn-primary detail-action-btn" onclick="window.location.href='index.html'">Chat</button>
-                        <button class="btn-secondary detail-action-btn">Hiện số</button>
+                        <button type="button" class="btn-primary detail-action-btn" id="detailChatBtn">💬 Chat</button>
+                        <button type="button" class="btn-secondary detail-action-btn" id="detailPhoneBtn">📞 Hiện số</button>
                     </div>
+                    <div class="detail-phone-result" id="detailPhoneResult"></div>
                     <div class="seller-card">
                         <div class="seller-avatar">${sellerAvatar ? `<img src="${escapeHtml(sellerAvatar)}" alt="${escapeHtml(sellerName)}">` : '👤'}</div>
                         <div>
@@ -367,7 +368,7 @@ function renderProductDetail(product) {
                 </div>
             </div>
         </section>
-
+ 
         <section class="product-detail-body">
             <div class="product-detail-left">
                 <div class="product-section card-section">
@@ -397,28 +398,225 @@ function renderProductDetail(product) {
                 </div>
             </aside>
         </section>
-
+ 
         <section class="product-section card-section related-products-section">
             <h2>Gợi ý sản phẩm</h2>
             <div id="relatedProducts" class="related-products-grid">Đang tải gợi ý...</div>
         </section>
     `;
+ 
+    // Enable click-to-zoom fullscreen lightbox on the gallery images
+    ensureLightbox();
+    const galleryImgs = root.querySelectorAll('.product-image-carousel .carousel-item img');
+    galleryImgs.forEach((img, i) => {
+        img.classList.add('zoomable-image');
+        img.addEventListener('click', () => openLightbox(images, i, product));
+    });
+    if (galleryImgs.length === 0) {
+        const fallback = root.querySelector('.product-image-fallback');
+        if (fallback) fallback.style.cursor = 'default';
+    }
+ 
+    // Wire the detail-page action buttons (Chat / Hiện số)
+    const detailChatBtn = document.getElementById('detailChatBtn');
+    const detailPhoneBtn = document.getElementById('detailPhoneBtn');
+    const detailPhoneResult = document.getElementById('detailPhoneResult');
+    if (detailChatBtn) detailChatBtn.addEventListener('click', openChatWidget);
+    if (detailPhoneBtn && detailPhoneResult) {
+        detailPhoneBtn.addEventListener('click', () => {
+            const phone = getProductPhone(product);
+            detailPhoneResult.textContent = phone
+                ? `📱 Số liên hệ: ${phone}`
+                : 'Người bán chưa công khai số điện thoại — hãy nhắn qua Chat.';
+            detailPhoneResult.classList.add('visible');
+        });
+    }
 }
-
+ 
+// ==================== IMAGE LIGHTBOX ====================
+let lightboxState = { images: [], index: 0, product: null };
+ 
+function openChatWidget() {
+    const cbtn = document.getElementById('chatbot-btn');
+    if (cbtn) {
+        cbtn.click();
+    } else {
+        window.location.href = 'index.html';
+    }
+}
+ 
+function getProductPhone(product) {
+    if (!product) return '';
+    const raw = product.phone
+        || product.contact_phone
+        || (product.seller_info && product.seller_info.phone)
+        || product.sellerPhone
+        || '';
+    if (!raw) return '';
+    const s = String(raw).replace(/\s+/g, '');
+    return s.length >= 6 ? s.slice(0, s.length - 4) + '****' : s;
+}
+ 
+function ensureLightbox() {
+    if (document.getElementById('imageLightbox')) return;
+    const lb = document.createElement('div');
+    lb.id = 'imageLightbox';
+    lb.className = 'lightbox-overlay';
+    lb.innerHTML = `
+        <button type="button" class="lightbox-close" aria-label="Đóng">✕</button>
+        <button type="button" class="lightbox-arrow lightbox-prev" aria-label="Ảnh trước">‹</button>
+        <div class="lightbox-stage">
+            <div class="lightbox-counter"></div>
+            <img class="lightbox-main" src="" alt="Ảnh sản phẩm">
+            <div class="lightbox-thumbs"></div>
+        </div>
+        <button type="button" class="lightbox-arrow lightbox-next" aria-label="Ảnh sau">›</button>
+        <aside class="lightbox-panel"></aside>
+    `;
+    document.body.appendChild(lb);
+ 
+    // Clicking the empty black backdrop closes the lightbox
+    lb.addEventListener('click', (e) => { if (e.target === lb) closeLightbox(); });
+    lb.querySelector('.lightbox-close').addEventListener('click', (e) => { e.stopPropagation(); closeLightbox(); });
+    lb.querySelector('.lightbox-prev').addEventListener('click', (e) => { e.stopPropagation(); lightboxStep(-1); });
+    lb.querySelector('.lightbox-next').addEventListener('click', (e) => { e.stopPropagation(); lightboxStep(1); });
+    // Clicking the empty (black) area inside the stage also closes
+    lb.querySelector('.lightbox-stage').addEventListener('click', (e) => {
+        if (e.target.classList.contains('lightbox-stage')) closeLightbox();
+    });
+    lb.querySelector('.lightbox-main').addEventListener('click', (e) => e.stopPropagation());
+    lb.querySelector('.lightbox-panel').addEventListener('click', (e) => e.stopPropagation());
+ 
+    document.addEventListener('keydown', (e) => {
+        const overlay = document.getElementById('imageLightbox');
+        if (!overlay || !overlay.classList.contains('visible')) return;
+        if (e.key === 'Escape') closeLightbox();
+        else if (e.key === 'ArrowLeft') lightboxStep(-1);
+        else if (e.key === 'ArrowRight') lightboxStep(1);
+    });
+}
+ 
+function openLightbox(images, index, product) {
+    if (!Array.isArray(images) || images.length === 0) return;
+    ensureLightbox();
+    lightboxState = {
+        images: images,
+        index: Math.max(0, Math.min(index || 0, images.length - 1)),
+        product: product || null
+    };
+    renderLightbox();
+    const lb = document.getElementById('imageLightbox');
+    lb.classList.add('visible');
+    document.body.style.overflow = 'hidden';
+}
+ 
+function closeLightbox() {
+    const lb = document.getElementById('imageLightbox');
+    if (lb) lb.classList.remove('visible');
+    document.body.style.overflow = '';
+}
+ 
+function lightboxStep(delta) {
+    const n = lightboxState.images.length;
+    if (!n) return;
+    lightboxState.index = (lightboxState.index + delta + n) % n;
+    renderLightbox();
+}
+ 
+function renderLightbox() {
+    const lb = document.getElementById('imageLightbox');
+    if (!lb) return;
+    const { images, index, product } = lightboxState;
+    const mainImg = lb.querySelector('.lightbox-main');
+    mainImg.src = images[index];
+    mainImg.onerror = function () { this.onerror = null; this.src = '../Img/qc1.jpg'; };
+    lb.querySelector('.lightbox-counter').textContent = `${index + 1} / ${images.length}`;
+ 
+    const multi = images.length > 1;
+    lb.querySelector('.lightbox-prev').style.display = multi ? '' : 'none';
+    lb.querySelector('.lightbox-next').style.display = multi ? '' : 'none';
+ 
+    const thumbs = lb.querySelector('.lightbox-thumbs');
+    thumbs.innerHTML = images.map((src, i) => `
+        <button type="button" class="lightbox-thumb ${i === index ? 'active' : ''}" data-i="${i}" style="background-image:url('${escapeHtml(src)}')"></button>
+    `).join('');
+    thumbs.querySelectorAll('.lightbox-thumb').forEach((t) => {
+        t.addEventListener('click', (e) => {
+            e.stopPropagation();
+            lightboxState.index = Number(t.dataset.i);
+            renderLightbox();
+        });
+    });
+ 
+    lb.querySelector('.lightbox-panel').innerHTML = buildLightboxPanel(product);
+    wireLightboxPanel(lb, product);
+}
+ 
+function buildLightboxPanel(product) {
+    if (!product) return '';
+    const title = product.subject || product.body || product.title || product.name || 'Sản phẩm';
+    const price = product.price_string || (product.price ? formatPrice(product.price) : 'Liên hệ');
+    const sellerName = product.account_name || product.full_name || (product.seller_info && product.seller_info.full_name) || 'Người bán';
+    const location = [product.ward_name, product.area_name, product.region_name].filter(Boolean).join(', ') || product.location || '';
+    const liveAds = (product.seller_info && product.seller_info.live_ads) || product.sellerAds || '';
+    const initial = (sellerName.trim().charAt(0) || 'N').toUpperCase();
+    return `
+        <div class="lb-seller">
+            <div class="lb-seller-avatar">${escapeHtml(initial)}</div>
+            <div class="lb-seller-meta">
+                <div class="lb-seller-name">${escapeHtml(sellerName)}</div>
+                <div class="lb-seller-sub">${liveAds ? escapeHtml(String(liveAds)) + ' tin đăng' : 'Đang hoạt động'}</div>
+            </div>
+        </div>
+        <h3 class="lb-title">${escapeHtml(title)}</h3>
+        <div class="lb-price">${escapeHtml(price)}</div>
+        ${location ? `<div class="lb-location">📍 ${escapeHtml(location)}</div>` : ''}
+        <div class="lb-actions">
+            <button type="button" class="lb-btn lb-btn-phone" id="lbPhoneBtn">📞 Hiện số</button>
+            <button type="button" class="lb-btn lb-btn-chat" id="lbChatBtn">💬 Chat</button>
+        </div>
+        <div class="lb-phone-result" id="lbPhoneResult"></div>
+        <div class="lb-hint">Bấm vào vùng nền đen để đóng và quay lại trang sản phẩm.</div>
+    `;
+}
+ 
+function wireLightboxPanel(lb, product) {
+    const phoneBtn = lb.querySelector('#lbPhoneBtn');
+    const chatBtn = lb.querySelector('#lbChatBtn');
+    const phoneResult = lb.querySelector('#lbPhoneResult');
+    if (phoneBtn && phoneResult) {
+        phoneBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const phone = getProductPhone(product);
+            phoneResult.textContent = phone
+                ? `📱 ${phone}`
+                : 'Người bán chưa công khai số — hãy nhắn qua Chat.';
+            phoneResult.classList.add('visible');
+        });
+    }
+    if (chatBtn) {
+        chatBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            closeLightbox();
+            openChatWidget();
+        });
+    }
+}
+ 
 function renderRelatedProducts(products, currentId) {
     const container = document.getElementById('relatedProducts');
     if (!container) return;
-
+ 
     if (!Array.isArray(products) || products.length === 0) {
         container.innerHTML = '<div class="empty-related">Không có gợi ý phù hợp.</div>';
         return;
     }
-
+ 
     container.innerHTML = products.filter(item => (item.ad_id || item.id) != currentId).slice(0, 8).map(product => {
         const thumb = product.image || product.thumbnail_image || (product.images && product.images[0]) || '';
         const price = product.price_string || (product.price ? formatPrice(product.price) : 'Liên hệ');
         const title = product.subject || product.name || 'Tin đăng Chợ Tốt';
-
+ 
         return `
             <div class="related-card" onclick="window.location.href='product.html?id=${encodeURIComponent(product.ad_id || product.id)}'">
                 <div class="related-image" style="background-image:url('${escapeHtml(thumb)}')"></div>
@@ -431,10 +629,10 @@ function renderRelatedProducts(products, currentId) {
         `;
     }).join('');
 }
-
+ 
 async function fetchRelatedProducts(categoryId, currentId) {
     if (!categoryId) return [];
-
+ 
     const cachedProducts = getCachedProducts();
     if (cachedProducts.length > 0) {
         return cachedProducts
@@ -445,14 +643,14 @@ async function fetchRelatedProducts(categoryId, currentId) {
             })
             .slice(0, 12);
     }
-
+ 
     const resp = await fetchChototApi(`/api/chotot?cg=${encodeURIComponent(categoryId)}&limit=12`);
     if (!resp.ok) return [];
     const json = await resp.json();
     const ads = Array.isArray(json.ads) ? json.ads : (Array.isArray(json) ? json : []);
     return ads.filter(item => (item.ad_id || item.id) != currentId);
 }
-
+ 
 async function initProductPage() {
     const productId = getQueryParam('id');
     const root = document.getElementById('productDetailRoot');
@@ -460,7 +658,7 @@ async function initProductPage() {
         if (root) root.innerHTML = '<div class="product-error">Không tìm thấy sản phẩm. Vui lòng quay lại trang trước.</div>';
         return;
     }
-
+ 
     try {
         let product = null;
         try {
@@ -475,14 +673,14 @@ async function initProductPage() {
         } catch (err) {
             console.warn('Could not read selected product cache:', err.message);
         }
-
+ 
         if (!product) {
             product = getCachedProductById(productId);
             if (product) {
                 console.log('Loaded product detail from cached list for id', productId);
             }
         }
-
+ 
         if (product) {
             if (product.raw) product = product.raw;
             renderProductDetail(product);
@@ -490,7 +688,7 @@ async function initProductPage() {
             renderRelatedProducts(related, product.ad_id || product.id || productId);
             return;
         }
-
+ 
         product = await fetchProductDetail(productId);
         renderProductDetail(product);
         const related = await fetchRelatedProducts(product.category || product.category_name || product.categoryName, product.ad_id || product.id || productId);
@@ -499,5 +697,6 @@ async function initProductPage() {
         if (root) root.innerHTML = `<div class="product-error">Lỗi tải sản phẩm: ${escapeHtml(err.message)}</div>`;
     }
 }
-
+ 
 document.addEventListener('DOMContentLoaded', initProductPage);
+ 

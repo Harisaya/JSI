@@ -1326,6 +1326,29 @@ function setLoadingState(isLoading) {
   }
 }
 
+// ==================== USER-POSTED PRODUCTS (from sell.html) ====================
+function getStoredUserProducts() {
+  try {
+    const raw = localStorage.getItem("userProducts");
+    if (!raw) return [];
+    const list = JSON.parse(raw);
+    if (!Array.isArray(list)) return [];
+    return list.map((p) => ({
+      ...p,
+      id: p.id || Date.now(),
+      rating: p.rating || 5,
+      location: p.location || "Toàn quốc",
+      priceString:
+        p.priceString ||
+        (p.price ? `${Number(p.price).toLocaleString("vi-VN")} đ` : "Liên hệ"),
+      _postDate: new Date(p.createdAt || p._postDate || Date.now()),
+    }));
+  } catch (e) {
+    return [];
+  }
+}
+
+
 // ==================== LOAD PRODUCTS ====================
 async function loadProducts() {
   setLoadingState(true);
@@ -1386,6 +1409,13 @@ async function loadProducts() {
       );
       // Show persistent banner offering to redirect to local proxy server
       showProxyMissingBanner();
+    }
+
+ // Prepend products the user posted on sell.html so they show up on the homepage.
+    const userProducts = getStoredUserProducts();
+    if (userProducts.length) {
+      state.products = [...userProducts, ...state.products];
+      state.filteredProducts = [...state.products];
     }
 
     renderProducts();
