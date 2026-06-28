@@ -1274,36 +1274,6 @@ async function fetchChototProductsRealApi() {
     console.log("Skipping same-origin proxy call (not served from port 3000)");
   }
 
-  // // Try the local proxy server on port 3000 if it has not been marked unavailable.
-  // if (localProxyAvailable !== "false") {
-  //   try {
-  //     const resp = await fetch(serverProxy, {
-  //       headers: { Accept: "application/json" },
-  //     });
-  //     sessionStorage.setItem("chototLocalProxyAvailable", "true");
-  //     if (resp.ok) {
-  //       const json = await resp.json();
-  //       const ads = json.ads || json;
-  //       const parsed = await parseChototResponse(ads);
-  //       if (parsed.length > 0) {
-  //         console.log("Loaded from server proxy:", serverProxy, parsed.length);
-  //         return parsed.slice(0, 200);
-  //       }
-  //     } else {
-  //       console.warn(
-  //         "Server proxy returned non-ok status",
-  //         serverProxy,
-  //         resp.status,
-  //       );
-  //     }
-  //   } catch (e) {
-  //     sessionStorage.setItem("chototLocalProxyAvailable", "false");
-  //     console.warn("Server proxy failed for", serverProxy, e.message);
-  //   }
-  // } else {
-  //   console.log("Skipping local proxy because it was unavailable earlier");
-  // }
-
   // Fallback to public CORS proxy services
   const gatewayUrl =
     "https://gateway.chotot.com/v1/public/ad-listing?page=1&limit=200";
